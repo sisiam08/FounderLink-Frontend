@@ -7,20 +7,40 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
 
+const signupSchema = z.object({
+    fullName: z.string().min(3, "Name must be at least 3 characters long"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+        message:
+            "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+    }),
+});
 
 export default function SignupForm() {
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
     const form = useForm({
         defaultValues: {
             fullName: "",
             email: "",
             password: "",
         },
-    });
+        validators: { onChange: signupSchema },
+        onSubmit: async ({ value }) => {
+            setLoading(true);
+            try {
+                router.push("/login");
+            } catch (error) {
 
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+            }
+        }
+    });
 
     return (
         <Card className="mx-auto w-full max-w-md shadow-lg">
@@ -31,7 +51,13 @@ export default function SignupForm() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <form id="signup-form" className="space-y-6">
+                <form
+                    id="signup-form"
+                    className="space-y-6"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        form.handleSubmit(e);
+                    }}>
                     <FieldGroup>
                         <form.Field name="fullName" children={(field) => {
                             const isInvalid =
