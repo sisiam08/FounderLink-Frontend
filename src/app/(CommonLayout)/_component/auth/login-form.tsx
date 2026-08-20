@@ -7,19 +7,38 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
 
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+        message:
+            "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+    }),
+});
 
 export default function LoginForm() {
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
     const form = useForm({
         defaultValues: {
             email: "",
             password: "",
         },
-    });
+        validators: { onChange: loginSchema },
+        onSubmit: async ({ value }) => {
+            setLoading(true);
+            try {
+                router.push("/");
+            } catch (error) {
 
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+            }
+        }
+    });
 
     return (
         <Card className="mx-auto w-full max-w-md shadow-lg">
@@ -30,7 +49,13 @@ export default function LoginForm() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <form id="login-form" className="space-y-6">
+                <form
+                    id="login-form"
+                    className="space-y-6"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        form.handleSubmit(e);
+                    }}>
                     <FieldGroup>
                         <form.Field name="email" children={(field) => {
                             const isInvalid =
