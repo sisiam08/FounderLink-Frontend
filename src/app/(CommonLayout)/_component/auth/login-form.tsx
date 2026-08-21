@@ -137,13 +137,6 @@ export default function LoginForm() {
                     type="button"
                     variant="outline"
                     className="w-full"
-                // onClick={() => {
-                //     toast({
-                //         title: "Feature under construction",
-                //         description: "Google sign-in is currently under construction. Please use email & password.",
-                //         variant: "default",
-                //     });
-                // }}
                 >
                     <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
                         <path
