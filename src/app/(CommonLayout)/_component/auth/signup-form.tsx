@@ -32,13 +32,11 @@ const signupSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z
     .string()
-    .regex(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message:
-          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
-      }
-    ),
+    .min(8, "At least 8 characters")
+    .regex(/[A-Z]/, "At least one uppercase letter")
+    .regex(/[a-z]/, "At least one lowercase letter")
+    .regex(/\d/, "At least one number")
+    .regex(/[@$!%*?&]/, "At least one special character (@$!%*?&)"),
 });
 const otpSchema = z.object({
   code: z.string().length(6, "Verification code must be 6 digits"),
