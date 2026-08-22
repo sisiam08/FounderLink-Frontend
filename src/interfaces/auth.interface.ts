@@ -10,3 +10,16 @@ export interface IAuthState {
   setInitialized: (initialized: boolean) => void;
   clearAuth: () => void;
 }
+
+export interface IApiResponse<T> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+}
+
+export interface ISignupResponse {
+  message: string;
+  expiresAt: string;
+}
+
+

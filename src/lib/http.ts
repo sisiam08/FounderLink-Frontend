@@ -1,10 +1,11 @@
 import api from "./api-client";
+import { IApiResponse } from "@/interfaces";
 
 export const httpGet = async <T>(
   endpoint: string,
   params?: Record<string, any>
-): Promise<T> => {
-  const response = await api.get<T>(endpoint, {
+): Promise<IApiResponse<T>> => {
+  const response = await api.get<IApiResponse<T>>(endpoint, {
     params,
   });
 
@@ -15,8 +16,8 @@ export const httpPost = async <T>(
   endpoint: string,
   data?: any,
   params?: Record<string, any>
-): Promise<T> => {
-  const response = await api.post<T>(endpoint, data, {
+): Promise<IApiResponse<T>> => {
+  const response = await api.post<IApiResponse<T>>(endpoint, data, {
     params,
   });
 
@@ -27,8 +28,8 @@ export const httpPatch = async <T>(
   endpoint: string,
   data?: any,
   params?: Record<string, any>
-): Promise<T> => {
-  const response = await api.patch<T>(endpoint, data, {
+): Promise<IApiResponse<T>> => {
+  const response = await api.patch<IApiResponse<T>>(endpoint, data, {
     params,
   });
 
@@ -38,8 +39,8 @@ export const httpPatch = async <T>(
 export const httpDelete = async <T>(
   endpoint: string,
   params?: Record<string, any>
-): Promise<T> => {
-  const response = await api.delete<T>(endpoint, {
+): Promise<IApiResponse<T>> => {
+  const response = await api.delete<IApiResponse<T>>(endpoint, {
     params,
   });
 

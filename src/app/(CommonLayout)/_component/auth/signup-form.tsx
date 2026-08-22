@@ -16,8 +16,12 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { ISignupResponse, IUser } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { httpPost } from "@/lib/http";
 import { useForm } from "@tanstack/react-form";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -36,13 +40,18 @@ const signupSchema = z.object({
       }
     ),
 });
+const otpSchema = z.object({
+  code: z.string().length(6, "Verification code must be 6 digits"),
+});
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState<"signup" | "verify">("signup");
+  const [code, setCode] = useState("");
   const router = useRouter();
 
-  const form = useForm({
+  const signupForm = useForm({
     defaultValues: {
       fullName: "",
       email: "",
@@ -52,10 +61,135 @@ export default function SignupForm() {
     onSubmit: async ({ value }) => {
       setLoading(true);
       try {
-        router.push("/login");
-      } catch (error) {}
+        const userInfo = {
+          fullName: value.fullName,
+          email: value.email,
+          password: value.password,
+        };
+        const response = await httpPost<ISignupResponse>(
+          "/auth/signup",
+          userInfo
+        );
+        toast.add({
+          type: "success",
+          description: response.data.message,
+        });
+
+        setStep("verify");
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        const errorResponse = getApiErrorMessage(error);
+        toast.add({
+          type: "error",
+          description: errorResponse,
+        });
+      }
     },
   });
+
+  const otpForm = useForm({
+    defaultValues: {
+      code: "",
+    },
+    validators: { onChange: otpSchema },
+    onSubmit: async ({ value }) => {
+      setLoading(true);
+      try {
+        await httpPost<IUser>("/auth/signup/verify-otp", {
+          email: signupForm.state.values.email,
+          code: value.code,
+        });
+        toast.add({
+          type: "success",
+          description: "Account created successfully.",
+        });
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        const errorResponse = getApiErrorMessage(error);
+        toast.add({
+          type: "error",
+          description: errorResponse,
+        });
+      }
+    },
+  });
+
+  if (step === "verify") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Verify your email</CardTitle>
+          <CardDescription>
+            We sent a verification code to{" "}
+            <strong>{signupForm.state.values.email}</strong>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <form
+            id="otp-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              otpForm.handleSubmit(e);
+            }}
+          >
+            <FieldGroup>
+              <otpForm.Field
+                name="code"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>
+                        Verification code
+                      </FieldLabel>
+                      <Input
+                        type="text"
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onChange={(e) => {
+                          field.handleChange(e.target.value);
+                          setCode(e.target.value);
+                        }}
+                        placeholder="Enter 6-digit code"
+                        required
+                        autoFocus
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            </FieldGroup>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-4">
+          <Button
+            form="otp-form"
+            type="submit"
+            className="w-full"
+            disabled={loading || code.length !== 6}
+          >
+            {loading ? "Verifying..." : "Verify & Create Account"}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setStep("signup")}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to signup form
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mx-auto w-full max-w-md shadow-lg">
@@ -69,11 +203,11 @@ export default function SignupForm() {
           className="space-y-6"
           onSubmit={(e) => {
             e.preventDefault();
-            form.handleSubmit(e);
+            signupForm.handleSubmit(e);
           }}
         >
           <FieldGroup>
-            <form.Field
+            <signupForm.Field
               name="fullName"
               children={(field) => {
                 const isInvalid =
@@ -100,7 +234,7 @@ export default function SignupForm() {
             />
           </FieldGroup>
           <FieldGroup>
-            <form.Field
+            <signupForm.Field
               name="email"
               children={(field) => {
                 const isInvalid =
@@ -127,7 +261,7 @@ export default function SignupForm() {
             />
           </FieldGroup>
           <FieldGroup>
-            <form.Field
+            <signupForm.Field
               name="password"
               children={(field) => {
                 const isInvalid =
@@ -179,7 +313,7 @@ export default function SignupForm() {
           className="w-full"
           disabled={loading}
         >
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? "Sending code..." : "Create account"}
         </Button>
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
