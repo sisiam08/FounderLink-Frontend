@@ -30,6 +30,6 @@
     "**/*.mts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "../api-client.ts", "../env.ts"  ],
+, "src/lib/api-client.ts", "src/env.ts"  ],
   "exclude": ["node_modules"]
 }

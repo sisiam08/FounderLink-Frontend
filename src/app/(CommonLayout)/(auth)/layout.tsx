@@ -2,8 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../../public/founderlink_logo.png";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
-      return (
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background via-card to-primary/5 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
