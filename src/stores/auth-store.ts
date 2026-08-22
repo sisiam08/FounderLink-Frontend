@@ -6,13 +6,9 @@ export const useAuthStore = create<IAuthState>((set) => ({
   accessToken: null,
   initialized: false,
 
-  setUser: (user) =>
+  setAuth: ({ user, accessToken }) =>
     set({
       user,
-    }),
-
-  setAccessToken: (accessToken) =>
-    set({
       accessToken,
     }),
 

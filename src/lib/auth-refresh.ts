@@ -19,9 +19,7 @@ export const refreshAccessToken = async (): Promise<IRefreshResponse> => {
     throw new Error("Refresh response did not contain required data");
   }
 
-  authStore.setUser(user);
-  authStore.setAccessToken(accessToken);
-
+  authStore.setAuth({ user, accessToken });
   return { user, accessToken };
 };
 

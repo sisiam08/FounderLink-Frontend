@@ -5,8 +5,7 @@ export interface IAuthState {
   accessToken: string | null;
   initialized: boolean;
 
-  setUser: (user: IUser) => void;
-  setAccessToken: (accessToken: string) => void;
+  setAuth: (auth: { user: IUser; accessToken: string }) => void;
   setInitialized: (initialized: boolean) => void;
   clearAuth: () => void;
 }

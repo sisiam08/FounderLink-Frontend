@@ -63,9 +63,7 @@ export default function LoginForm() {
           "/auth/login",
           userInfo
         );
-        const { user, accessToken } = response.data;
-        useAuthStore.getState().setUser(user);
-        useAuthStore.getState().setAccessToken(accessToken);
+        useAuthStore.getState().setAuth(response.data);
         toast.add({
           type: "success",
           description: "You have successfully logged in.",
