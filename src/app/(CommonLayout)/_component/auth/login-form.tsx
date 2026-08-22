@@ -16,6 +16,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { ILoginResponse } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { httpPost } from "@/lib/http";
+import { useAuthStore } from "@/stores/auth-store";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -50,8 +55,31 @@ export default function LoginForm() {
     onSubmit: async ({ value }) => {
       setLoading(true);
       try {
-        router.push("/");
-      } catch (error) {}
+        const userInfo = {
+          email: value.email,
+          password: value.password,
+        };
+        const response = await httpPost<ILoginResponse>(
+          "/auth/login",
+          userInfo
+        );
+        const { user, accessToken } = response.data;
+        useAuthStore.getState().setUser(user);
+        useAuthStore.getState().setAccessToken(accessToken);
+        toast.add({
+          type: "success",
+          description: "You have successfully logged in.",
+        });
+        setLoading(false);
+        router.push("/dashboard");
+      } catch (error) {
+        setLoading(false);
+        const errorMessage = getApiErrorMessage(error);
+        toast.add({
+          type: "error",
+          description: errorMessage,
+        });
+      }
     },
   });
 

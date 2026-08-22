@@ -1,10 +1,11 @@
+import { IApiResponse, IRefreshResponse, IUser } from "@/interfaces";
 import { useAuthStore } from "@/stores/auth-store";
-import axios from "axios";
+import api from "./api-client";
 
 const authStore = useAuthStore.getState();
 
-export const refreshAccessToken = async (): Promise<string> => {
-  const response = await axios.post(
+export const refreshAccessToken = async (): Promise<IRefreshResponse> => {
+  const response = await api.post<IApiResponse<IRefreshResponse>>(
     "/auth/refresh",
     {},
     {
@@ -12,29 +13,21 @@ export const refreshAccessToken = async (): Promise<string> => {
     }
   );
 
-  const accessToken = response.data.accessToken;
+  const { user, accessToken } = response.data.data;
 
-  if (!accessToken) {
-    throw new Error("Refresh response did not contain accessToken");
+  if (!user || !accessToken) {
+    throw new Error("Refresh response did not contain required data");
   }
 
+  authStore.setUser(user);
   authStore.setAccessToken(accessToken);
 
-  return accessToken;
+  return { user, accessToken };
 };
 
 export const restoreSession = async () => {
   try {
-    const accessToken = await refreshAccessToken();
-
-    const response = await axios.get("/auth/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      withCredentials: true,
-    });
-
-    authStore.setUser(response.data.user);
+    await refreshAccessToken();
 
     return true;
   } catch (error) {

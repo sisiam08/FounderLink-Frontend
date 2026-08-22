@@ -4,6 +4,7 @@ export const getApiErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
 
     const message = error.response?.data?.data?.message;
+    console.log("API Error Message:", message);
 
     if (Array.isArray(message)) {
       return message.join(", ");

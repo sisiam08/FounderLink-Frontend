@@ -79,10 +79,10 @@ export default function SignupForm() {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        const errorResponse = getApiErrorMessage(error);
+        const errorMessage = getApiErrorMessage(error);
         toast.add({
           type: "error",
-          description: errorResponse,
+          description: errorMessage,
         });
       }
     },
@@ -104,13 +104,14 @@ export default function SignupForm() {
           type: "success",
           description: "Account created successfully.",
         });
+        router.push("/login");
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        const errorResponse = getApiErrorMessage(error);
+        const errorMessage = getApiErrorMessage(error);
         toast.add({
           type: "error",
-          description: errorResponse,
+          description: errorMessage,
         });
       }
     },
