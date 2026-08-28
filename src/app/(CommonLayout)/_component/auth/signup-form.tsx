@@ -165,27 +165,27 @@ export default function SignupForm() {
                 }}
               />
             </FieldGroup>
+
+            <div className="mt-4 flex flex-col gap-4">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || code.length !== 6}
+              >
+                {loading ? "Verifying..." : "Verify & Create Account"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setStep("signup")}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to signup form
+              </Button>
+            </div>
           </form>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button
-            form="otp-form"
-            type="submit"
-            className="w-full"
-            disabled={loading || code.length !== 6}
-          >
-            {loading ? "Verifying..." : "Verify & Create Account"}
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setStep("signup")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to signup form
-          </Button>
-        </CardFooter>
       </Card>
     );
   }
@@ -303,17 +303,15 @@ export default function SignupForm() {
               }}
             />
           </FieldGroup>
+
+          <div className="flex flex-col gap-4">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Sending code..." : "Create account"}
+            </Button>
+          </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col gap-4 border-t-0 bg-transparent px-4">
-        <Button
-          form="signup-form"
-          type="submit"
-          className="w-full"
-          disabled={loading}
-        >
-          {loading ? "Sending code..." : "Create account"}
-        </Button>
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
