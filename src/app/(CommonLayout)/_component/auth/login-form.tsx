@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
+import { SystemRole } from "@/constants/user-role";
 import { ILoginResponse } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { httpPost } from "@/lib/http";
@@ -67,7 +68,11 @@ export default function LoginForm() {
           description: "You have successfully logged in.",
         });
         setLoading(false);
-        router.push("/dashboard");
+        if (response.data.user.systemRole === SystemRole.ADMIN) {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/explore");
+        }
       } catch (error) {
         setLoading(false);
         const errorMessage = getApiErrorMessage(error);
