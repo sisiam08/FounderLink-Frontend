@@ -18,10 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { SystemRole } from "@/constants/user-role";
-import { ILoginResponse } from "@/interfaces";
+import { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { httpPost } from "@/lib/http";
-import { useAuthStore } from "@/stores/auth-store";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -58,17 +57,13 @@ export default function LoginForm() {
           email: value.email,
           password: value.password,
         };
-        const response = await httpPost<ILoginResponse>(
-          "/auth/login",
-          userInfo
-        );
-        useAuthStore.getState().setAuth(response.data);
+        const response = await httpPost<IUser>("/auth/login", userInfo);
         toast.add({
           type: "success",
           description: "You have successfully logged in.",
         });
         setLoading(false);
-        if (response.data.user.systemRole === SystemRole.ADMIN) {
+        if (response.data.systemRole === SystemRole.ADMIN || response.data.systemRole === SystemRole.SUPER_ADMIN) {
           router.push("/admin/dashboard");
         } else {
           router.push("/explore");

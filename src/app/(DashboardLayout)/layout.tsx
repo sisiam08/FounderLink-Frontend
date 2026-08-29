@@ -1,5 +1,3 @@
-import { AuthProvider } from "@/components/providers/auth-provider";
-
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -7,7 +5,7 @@ export default function DashboardLayout({
 }>) {
   return (
     <>
-      <AuthProvider>{children}</AuthProvider>
+      {children}
     </>
   );
 }

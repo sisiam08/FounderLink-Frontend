@@ -20,13 +20,3 @@ export interface ISignupResponse {
   message: string;
   expiresAt: string;
 }
-
-export interface ILoginResponse {
-  user: IUser;
-  accessToken: string;
-}
-
-export interface IRefreshResponse {
-  user: IUser;
-  accessToken: string;
-}
