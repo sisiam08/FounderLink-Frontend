@@ -1,13 +1,10 @@
+import { SystemRole } from "@/constants/user-role";
 import { IUser } from "./user.interface";
 
 export interface IAuthState {
   user: IUser | null;
-  accessToken: string | null;
-  initialized: boolean;
-
-  setAuth: (auth: { user: IUser; accessToken: string }) => void;
-  setInitialized: (initialized: boolean) => void;
-  clearAuth: () => void;
+  setUser: (user: IUser | null) => void;
+  clearUser: () => void;
 }
 
 export interface IApiResponse<T> {
@@ -20,3 +17,8 @@ export interface ISignupResponse {
   message: string;
   expiresAt: string;
 }
+
+export interface IAuthRouteRule {
+  match: (pathname: string) => boolean;
+  allowedRoles: SystemRole[];
+};

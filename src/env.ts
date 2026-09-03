@@ -2,7 +2,8 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import * as z from "zod";
 
 export const envConfig = createEnv({
-  server: {},
+  server: {
+  },
 
   client: {
     NEXT_PUBLIC_API_URL: z.string().url(),

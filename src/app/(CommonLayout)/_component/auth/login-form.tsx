@@ -58,12 +58,16 @@ export default function LoginForm() {
           password: value.password,
         };
         const response = await httpPost<IUser>("/auth/login", userInfo);
+
         toast.add({
           type: "success",
           description: "You have successfully logged in.",
         });
         setLoading(false);
-        if (response.data.systemRole === SystemRole.ADMIN || response.data.systemRole === SystemRole.SUPER_ADMIN) {
+        if (
+          response.data.systemRole === SystemRole.ADMIN ||
+          response.data.systemRole === SystemRole.SUPER_ADMIN
+        ) {
           router.push("/admin/dashboard");
         } else {
           router.push("/explore");
