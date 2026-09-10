@@ -58,6 +58,21 @@ export default function ChangePasswordForm() {
       confirmPassword: "",
     },
     validators: { onChange: changePasswordSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        await changePassword({
+          currentPassword: value.currentPassword,
+          newPassword: value.newPassword,
+        });
+        toast.add({
+          type: "success",
+          description: "Your password has been updated successfully.",
+        });
+        router.push("/profile");
+      } catch (error) {
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
+      }
+    },
   });
 
   return (
