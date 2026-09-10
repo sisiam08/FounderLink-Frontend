@@ -46,3 +46,15 @@ export const httpDelete = async <T>(
 
   return response.data;
 };
+
+
+export const httpUpload = async <T>(
+  endpoint: string,
+  formData: FormData
+): Promise<IApiResponse<T>> => {
+  const response = await api.post<IApiResponse<T>>(endpoint, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data;
+};
