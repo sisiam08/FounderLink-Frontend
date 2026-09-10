@@ -17,9 +17,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
-import { ISignupResponse, IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { signup, verifyOtp } from "@/services/auth.service";
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -43,10 +42,8 @@ const otpSchema = z.object({
 });
 
 export default function SignupForm() {
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<"signup" | "verify">("signup");
-  const [code, setCode] = useState("");
   const router = useRouter();
 
   const signupForm = useForm({
@@ -57,31 +54,20 @@ export default function SignupForm() {
     },
     validators: { onChange: signupSchema },
     onSubmit: async ({ value }) => {
-      setLoading(true);
       try {
-        const userInfo = {
+        const result = await signup({
           fullName: value.fullName,
           email: value.email,
           password: value.password,
-        };
-        const response = await httpPost<ISignupResponse>(
-          "/auth/signup",
-          userInfo
-        );
+        });
         toast.add({
           type: "success",
-          description: response.data.message,
+          description: result.message,
         });
 
         setStep("verify");
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
-        const errorMessage = getApiErrorMessage(error);
-        toast.add({
-          type: "error",
-          description: errorMessage,
-        });
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
       }
     },
   });
@@ -92,9 +78,8 @@ export default function SignupForm() {
     },
     validators: { onChange: otpSchema },
     onSubmit: async ({ value }) => {
-      setLoading(true);
       try {
-        await httpPost<IUser>("/auth/signup/verify-otp", {
+        await verifyOtp({
           email: signupForm.state.values.email,
           code: value.code,
         });
@@ -103,9 +88,7 @@ export default function SignupForm() {
           description: "Account created successfully.",
         });
         router.push("/login");
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
         const errorMessage = getApiErrorMessage(error);
         toast.add({
           type: "error",
@@ -149,10 +132,7 @@ export default function SignupForm() {
                         id={field.name}
                         name={field.name}
                         value={field.state.value}
-                        onChange={(e) => {
-                          field.handleChange(e.target.value);
-                          setCode(e.target.value);
-                        }}
+                        onChange={(e) => field.handleChange(e.target.value)}
                         placeholder="Enter 6-digit code"
                         required
                         autoFocus
@@ -167,13 +147,21 @@ export default function SignupForm() {
             </FieldGroup>
 
             <div className="mt-4 flex flex-col gap-4">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading || code.length !== 6}
-              >
-                {loading ? "Verifying..." : "Verify & Create Account"}
-              </Button>
+              <otpForm.Subscribe
+                selector={(state) => ({
+                  isSubmitting: state.isSubmitting,
+                  canSubmit: state.canSubmit,
+                })}
+                children={({ isSubmitting, canSubmit }) => (
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!canSubmit || isSubmitting}
+                  >
+                    {isSubmitting ? "Verifying..." : "Verify & Create Account"}
+                  </Button>
+                )}
+              />
               <Button
                 type="button"
                 variant="ghost"
@@ -305,9 +293,21 @@ export default function SignupForm() {
           </FieldGroup>
 
           <div className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Sending code..." : "Create account"}
-            </Button>
+            <signupForm.Subscribe
+              selector={(state) => ({
+                isSubmitting: state.isSubmitting,
+                canSubmit: state.canSubmit,
+              })}
+              children={({ isSubmitting, canSubmit }) => (
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!canSubmit || isSubmitting}
+                >
+                  {isSubmitting ? "Sending code..." : "Create account"}
+                </Button>
+              )}
+            />
           </div>
         </form>
       </CardContent>

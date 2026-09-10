@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardFooter } from "@/components/ui/card";
 import {
   Field,
   FieldError,
@@ -18,9 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { SystemRole } from "@/constants/user-role";
-import { IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { httpPost } from "@/lib/http";
+import { login } from "@/services/auth.service";
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +32,6 @@ const loginSchema = z.object({
 });
 
 export default function LoginForm() {
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -51,46 +42,32 @@ export default function LoginForm() {
     },
     validators: { onChange: loginSchema },
     onSubmit: async ({ value }) => {
-      setLoading(true);
       try {
-        const userInfo = {
+        const user = await login({
           email: value.email,
           password: value.password,
-        };
-        const response = await httpPost<IUser>("/auth/login", userInfo);
+        });
 
         toast.add({
           type: "success",
           description: "You have successfully logged in.",
         });
-        setLoading(false);
         if (
-          response.data.systemRole === SystemRole.ADMIN ||
-          response.data.systemRole === SystemRole.SUPER_ADMIN
+          user.systemRole === SystemRole.ADMIN ||
+          user.systemRole === SystemRole.SUPER_ADMIN
         ) {
           router.push("/admin/dashboard");
         } else {
-          router.push("/explore");
+          router.push("/requirements/browse");
         }
       } catch (error) {
-        setLoading(false);
-        const errorMessage = getApiErrorMessage(error);
-        toast.add({
-          type: "error",
-          description: errorMessage,
-        });
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
       }
     },
   });
 
   return (
-    <Card className="mx-auto w-full max-w-md shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-2xl">Sign in</CardTitle>
-        <CardDescription>
-          Enter your credentials to access your account
-        </CardDescription>
-      </CardHeader>
+    <>
       <CardContent className="space-y-4">
         <form
           id="login-form"
@@ -201,15 +178,27 @@ export default function LoginForm() {
               </svg>
               Continue with Google
             </Button>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
+            <form.Subscribe
+              selector={(state) => ({
+                isSubmitting: state.isSubmitting,
+                canSubmit: state.canSubmit,
+              })}
+              children={({ isSubmitting, canSubmit }) => (
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!canSubmit || isSubmitting}
+                >
+                  {isSubmitting ? "Signing in..." : "Sign in"}
+                </Button>
+              )}
+            />
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col gap-4 border-t-0 bg-transparent px-4">
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             href="/signup"
             className="font-medium text-foreground underline-offset-4 hover:underline"
@@ -218,6 +207,6 @@ export default function LoginForm() {
           </Link>
         </p>
       </CardFooter>
-    </Card>
+    </>
   );
 }

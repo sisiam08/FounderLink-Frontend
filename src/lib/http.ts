@@ -47,7 +47,6 @@ export const httpDelete = async <T>(
   return response.data;
 };
 
-
 export const httpUpload = async <T>(
   endpoint: string,
   formData: FormData
