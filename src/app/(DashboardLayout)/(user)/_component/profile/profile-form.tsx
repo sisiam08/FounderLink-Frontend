@@ -304,7 +304,39 @@ export default function ProfileForm({
         />
       </FieldGroup>
 
-      
+      <FieldGroup>
+        <form.Field
+          name="availableWeeklyCommitment"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  Weekly Availability (hours){" "}
+                  <span className="text-destructive">*</span>
+                </FieldLabel>
+                <p className="text-xs text-muted-foreground">
+                  How many hours per week can you commit to a co-founder
+                  partnership?
+                </p>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="number"
+                  min={1}
+                  max={80}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(Number(e.target.value))}
+                  placeholder="Hours per week"
+                  required
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
       
 
