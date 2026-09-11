@@ -37,7 +37,27 @@ export default async function RequirementDetailPage({
 
   return (
     <div className="max-w-3xl space-y-6">
-        
+        <Link
+        href="/requirements/browse"
+        className="-ml-2 inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+            <ArrowLeft className="size-4" />
+            Back to browse
+        </Link>
+
+      <div className="flex items-start justify-between gap-4">
+        <div>
+            <h1 className="text-2xl font-bold">{idea?.title}</h1>
+            <p className="mt-1 text-muted-foreground">
+            {idea?.shortDescription}
+            </p>
+        </div>
+
+        <CompatibilityScoreBadge
+          score={compatibilityScore}
+          size="lg"
+        />
+      </div>
     </div>
   );
 }
