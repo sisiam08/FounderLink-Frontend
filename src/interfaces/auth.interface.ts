@@ -1,5 +1,6 @@
 import { SystemRole } from "@/constants/user-role";
 import { IUser } from "./user.interface";
+import { InternalAxiosRequestConfig } from "axios";
 
 export interface IAuthState {
   user: IUser | null;
@@ -18,7 +19,6 @@ export interface ISignupResponse {
   expiresAt: string;
 }
 
-export interface IAuthRouteRule {
-  match: (pathname: string) => boolean;
-  allowedRoles: SystemRole[];
-};
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
