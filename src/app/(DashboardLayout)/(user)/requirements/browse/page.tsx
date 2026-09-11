@@ -25,5 +25,19 @@ export default async function BrowsePage({
    const role = (sp.role ?? "all").toString();
    const industry=(sp.industry ?? "all").toString();
    const stage=(sp.stage ?? "all").toString();
+
+   let profile: IProfile | null=null;
+   let requirements: IRequirementWithScore[]=[];
+   let nextCursor: BrowseRequirementsResult["nextCursor"]=null;
+
+
+   try{
+    const[profileRes, listRes]=await Promise.all([
+        getMyProfile(),
+        getBrowseRequirements({role,industry,stage}),
+    ]);
+   }
+
+   catch{}
 }
 
