@@ -36,8 +36,52 @@ export default async function BrowsePage({
         getMyProfile(),
         getBrowseRequirements({role,industry,stage}),
     ]);
+
+    profile = profileRes;
+    requirements=listRes.data;
+    nextCursor=listRes.nextCursor;
    }
 
    catch{}
+
+
+   const missingFields: string[]=[];
+   if(!profile?.role) missingFields.push("Role");
+
+   if (!profile?.skills || profile.skills.length === 0) missingFields.push("Skills");
+
+   if (
+    !profile?.interestedIndustries ||
+    profile.interestedIndustries.length === 0
+   )
+
+    missingFields.push("Industries");
+
+  if (!profile?.availableWeeklyCommitment)
+    missingFields.push("Weekly Availability");
+
+  return (
+        {missingFields.length > 0 && (
+            <div className="flex items-start gap-3 rounded-lg border    border-warning/20 bg-warning/10 p-4 text-sm">
+              <AlertTriangle className="mt-0.5 size-5 shrink-0  text-warning" />
+
+              <div>
+                <p className="font-medium text-warning">
+                  Complete your profile for accurate compatibility scores
+                </p>
+
+                <p className="mt-0.5 text-muted-foreground">
+                  Fill in: {missingFields.join(", ")} —{" "}
+                  <Link
+                    href="/profile"
+                    className="font-medium underline underline-offset-2     hover:text-foreground"
+                  >
+                    Edit profile
+                  </Link>
+                </p>
+              </div>
+            </div>
+        )}
+  )
 }
 
