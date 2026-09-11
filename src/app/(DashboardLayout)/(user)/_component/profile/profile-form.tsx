@@ -124,6 +124,40 @@ export default function ProfileForm({
     },
   });
 
+  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.add({ type: "error", description: "Max 5MB allowed" });
+      return;
+    }
+    if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
+      toast.add({
+        type: "error",
+        description: "Only JPEG, JPG, and PNG allowed",
+      });
+      return;
+    }
+
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const result = await uploadProfilePhoto(fd);
+      form.setFieldValue("photoUrl", result.photoUrl);
+      toast.add({ type: "success", description: "Photo uploaded" });
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    } finally {
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  const photoUrl = form.state.values.photoUrl;
+  const photoSrc = photoUrl
+    ? photoUrl.startsWith("http")
+      ? photoUrl
+      : `${API_ORIGIN}${photoUrl}`
+    : null;
 
   return (
   );
