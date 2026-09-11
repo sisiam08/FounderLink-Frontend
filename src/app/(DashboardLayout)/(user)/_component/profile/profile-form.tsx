@@ -363,7 +363,93 @@ export default function ProfileForm({
         />
       </FieldGroup>
 
-      
+      <FieldGroup>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <form.Field
+            name="portfolioUrl"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Portfolio URL</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="url"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Your portfolio link"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+          <form.Field
+            name="location"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="City, Country"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+          <form.Field
+            name="githubUrl"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>GitHub URL</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="url"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Your GitHub profile link"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+          <form.Field
+            name="linkedinUrl"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>LinkedIn URL</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="url"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Your LinkedIn profile link"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+        </div>
+      </FieldGroup>
 
     </form>
   );
