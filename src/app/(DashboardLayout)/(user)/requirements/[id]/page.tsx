@@ -128,6 +128,7 @@ export default async function RequirementDetailPage({
                 </div>
             </CardContent>
         </Card>
+        <ApplyToRequirement requirementId={id}/>
     </div>
   );
 }
