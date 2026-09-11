@@ -185,7 +185,15 @@ export default function MyApplicationsClient({
           </Table>
         </CardContent>
     </Card>
-      
+
+    <ConfirmDialog
+        open={!!withdrawId}
+        onOpenChange={(open) => !open && setWithdrawId(null)}
+        title="Withdraw this application?"
+        description="You can reapply later, but you'll need to submit a new application."
+        confirmLabel="Withdraw"
+        onConfirm={() => withdrawId && void handleWithdraw(withdrawId)}
+      />
     </>
   );
 }
