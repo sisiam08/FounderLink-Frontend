@@ -58,6 +58,38 @@ export default async function RequirementDetailPage({
           size="lg"
         />
       </div>
+
+        {idea && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">
+                  About this startup
+                </CardTitle>
+              </CardHeader>
+            
+              <CardContent className="space-y-4">
+                <p className="text-sm   whitespace-pre-wrap   text-muted-foreground">
+                  {idea.fullDescription}
+                </p>
+            
+                <div className="flex flex-wrap gap-1.   5">
+                  {idea.industries.map((ind) => (
+                    <span
+                      key={ind}
+                      className="inline-flex    shrink-0 items-center gap-1    rounded-md bg-primary/10 px-2  py-0.5 text-xs font-medium   text-primary"
+                    >
+                      <Tag className="size-3" />
+                      {ind}
+                    </span>
+                  ))}
+    
+                  <span className="rounded-md   bg-muted px-2 py-0.5 text-xs  font-medium text-foreground  capitalize">
+                    {idea.startupStage} stage
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+        )}
     </div>
   );
 }
