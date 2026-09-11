@@ -19,9 +19,25 @@ export default async function RequirementDetailPage({
 
   let requirementData: IRequirementWithScore | null = null;
 
+  try{
+    requirementData=await getRequirementDetails(id);
+  }
+
+  catch{
+    requirementData=null;
+  }
+
+  if(!requirementData){
+    notFound();
+  }
+
+  const{requirement, compatibilityScore}=requirementData;
+
+  const idea=requirement.startupIdea;
+
   return (
     <div className="max-w-3xl space-y-6">
-  
+        
     </div>
   );
 }
