@@ -276,7 +276,33 @@ export default function ProfileForm({
         />
       </FieldGroup>
 
-      
+      <FieldGroup>
+        <form.Field
+          name="interestedIndustries"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  Interested Industries{" "}
+                  <span className="text-destructive">*</span>
+                </FieldLabel>
+                <p className="text-xs text-muted-foreground">
+                  Which industry sectors are you most interested in?
+                </p>
+                <MultiSelect
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  options={INDUSTRY_OPTIONS}
+                  placeholder="Select industries..."
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
       
 
