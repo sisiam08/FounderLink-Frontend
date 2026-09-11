@@ -61,6 +61,14 @@ export default async function BrowsePage({
     missingFields.push("Weekly Availability");
 
   return (
+    <div className="space-y-6">
+        <div>
+            <h1 className="text-x1 font-bold sm:text-2x1">Browse Opportunities</h1>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+                Open co-founder requirements, ranked by your compatibility score
+            </p>
+        </div>
         {missingFields.length > 0 && (
             <div className="flex items-start gap-3 rounded-lg border    border-warning/20 bg-warning/10 p-4 text-sm">
               <AlertTriangle className="mt-0.5 size-5 shrink-0  text-warning" />
@@ -82,6 +90,15 @@ export default async function BrowsePage({
               </div>
             </div>
         )}
+
+        <BrowseClient
+            initialRequirements={requirements}
+            initialNextCursor={nextCursor}
+            initialRole={role}
+            initialIndustry={industry}
+            initialStage={stage}
+        />
+    </div>
   )
 }
 
