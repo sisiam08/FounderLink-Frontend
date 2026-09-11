@@ -20,6 +20,10 @@ export default async function BrowsePage({
         stage?: string | string[];
     }>;
 }){
-    
+   const sp=await searchParams;
+
+   const role = (sp.role ?? "all").toString();
+   const industry=(sp.industry ?? "all").toString();
+   const stage=(sp.stage ?? "all").toString();
 }
 
