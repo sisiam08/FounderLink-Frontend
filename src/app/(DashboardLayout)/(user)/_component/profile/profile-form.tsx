@@ -338,7 +338,30 @@ export default function ProfileForm({
         />
       </FieldGroup>
 
-      
+      <FieldGroup>
+        <form.Field
+          name="bio"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Bio</FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                  maxLength={2000}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
       
 
