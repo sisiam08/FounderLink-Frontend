@@ -160,5 +160,57 @@ export default function ProfileForm({
     : null;
 
   return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit(e);
+      }}
+      className="space-y-6"
+    >
+      <div className="flex items-center gap-4">
+        <Avatar className="size-20">
+          {photoSrc && (
+            <img
+              src={photoSrc}
+              alt="Profile"
+              className="size-full rounded-full object-cover"
+            />
+          )}
+          <AvatarFallback className="text-lg"></AvatarFallback>
+        </Avatar>
+        <div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handlePhoto}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileRef.current?.click()}
+          >
+            <Upload className="size-4" />
+            Upload photo
+          </Button>
+          {photoUrl && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => form.setFieldValue("photoUrl", null)}
+            >
+              <X className="size-4" />
+              Remove
+            </Button>
+          )}
+          <p className="mt-1 text-xs text-muted-foreground">
+            JPG, JPEG, or PNG. Max 5MB.
+          </p>
+        </div>
+      </div>
+    </form>
   );
 }
