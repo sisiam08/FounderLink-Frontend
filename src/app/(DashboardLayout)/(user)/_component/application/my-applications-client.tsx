@@ -2,17 +2,31 @@
 
 import { useState } from "react";
 
-import type { IApplication } from "@/interfaces";
-import { getMyApplications, withdrawApplication } from "@/services/application.service";
-import { getApiErrorMessage } from "@/lib/api-error";
-import { toast } from "@/components/ui/toast";
+import { Ban, MessageSquare } from "lucide-react";
+import Link from "next/link";
+
+import CompatibilityScoreBadge from "../../../../../components/shared/compatibility-score-badge";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
-import { Ban, Link, MessageSquare } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { formatDate } from "@/lib/utils";
-import CompatibilityScoreBadge from "@/components/shared/compatibility-score-badge";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Button } from "@base-ui/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { toast } from "@/components/ui/toast";
+import type { IApplication } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  getMyApplications,
+  withdrawApplication,
+} from "@/services/application.service";
+import { formatDate } from "@/lib/utils";
 
 export default function MyApplicationsClient({
   initialApplications,
@@ -104,7 +118,73 @@ export default function MyApplicationsClient({
             </CardContent>
           </Card>
         ))}
-      </div>
+    </div>
+
+    <Card className="hidden sm:block">
+        <CardContent className="overflow-x-auto p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Startup</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Score</TableHead>
+                <TableHead>Applied</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {applications.map((app) => (
+                <TableRow key={app.id}>
+                  <TableCell>
+                    <Link
+                      href={`/requirements/${app.requirement?.id}`}
+                      className="font-medium hover:underline"
+                    >
+                      {app.requirement?.startupIdea?.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-sm capitalize">
+                    {app.requirement?.requiredRole}
+                  </TableCell>
+                  <TableCell>
+                    <CompatibilityScoreBadge score={app.compatibilityScore} />
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {formatDate(app.createdAt)}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={app.status} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {app.status === "pending" && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setWithdrawId(app.id)}
+                      >
+                        <Ban className="size-4" />
+                        Withdraw
+                      </Button>
+                    )}
+                    {app.status === "accepted" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        nativeButton={false}
+                        render={<Link href={`/messages?thread=${app.id}`} />}
+                      >
+                        <MessageSquare className="size-4" />
+                        Message
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+    </Card>
       
     </>
   );
