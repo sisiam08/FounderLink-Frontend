@@ -66,12 +66,12 @@ export default async function RequirementDetailPage({
                   About this startup
                 </CardTitle>
               </CardHeader>
-            
+
               <CardContent className="space-y-4">
                 <p className="text-sm   whitespace-pre-wrap   text-muted-foreground">
                   {idea.fullDescription}
                 </p>
-            
+
                 <div className="flex flex-wrap gap-1.   5">
                   {idea.industries.map((ind) => (
                     <span
@@ -82,7 +82,7 @@ export default async function RequirementDetailPage({
                       {ind}
                     </span>
                   ))}
-    
+
                   <span className="rounded-md   bg-muted px-2 py-0.5 text-xs  font-medium text-foreground  capitalize">
                     {idea.startupStage} stage
                   </span>
@@ -90,6 +90,44 @@ export default async function RequirementDetailPage({
               </CardContent>
             </Card>
         )}
+
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-base">
+                    Requirement Details
+                </CardTitle>
+            </CardHeader>
+
+            <CardContent>
+                <div className="flex flex-wrap gap-3">
+                    <span className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-foreground">
+
+                        <Clock className="size-4" />
+                        {requirement.requiredWeeklyCommitment}h/week
+
+                    </span>
+
+                    <span className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-foreground">
+                        <Percent className="size-4" />
+                        {Number(requirement.equityOffered)}% equity
+                    </span>
+                </div>
+                    
+                <div>
+                    <h4 className="mb-2 text-sm font-semibold text-foreground">
+                      Required skills
+                    </h4>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {requirement.requiredSkills.map((skill) => (
+                        <span key={skill} className="shrink-0 rounded-md border border-border px-2 py-0.5 text-xs font-medium text-foreground">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     </div>
   );
 }
