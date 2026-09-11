@@ -7,7 +7,12 @@ import { getMyApplications, withdrawApplication } from "@/services/application.s
 import { getApiErrorMessage } from "@/lib/api-error";
 import { toast } from "@/components/ui/toast";
 import { EmptyState } from "@/components/shared/empty-state";
-import { MessageSquare } from "lucide-react";
+import { Ban, Link, MessageSquare } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils";
+import CompatibilityScoreBadge from "@/components/shared/compatibility-score-badge";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { Button } from "@base-ui/react";
 
 export default function MyApplicationsClient({
   initialApplications,
@@ -50,6 +55,56 @@ export default function MyApplicationsClient({
 
   return (
     <>
+    <div className="flex flex-col gap-3 sm:hidden">
+        {applications.map((app) => (
+          <Card key={app.id}>
+            <CardContent className="space-y-3 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <Link
+                    href={`/requirements/${app.requirement?.id}`}
+                    className="block truncate text-sm leading-snug font-medium hover:underline"
+                  >
+                    {app.requirement?.startupIdea?.title}
+                  </Link>
+                  <p className="mt-0.5 text-xs text-muted-foreground capitalize">
+                    {app.requirement?.requiredRole} · Applied{" "}
+                    {formatDate(app.createdAt)}
+                  </p>
+                </div>
+                <CompatibilityScoreBadge score={app.compatibilityScore} />
+              </div>
+              <div className="flex items-center justify-between">
+                <StatusBadge status={app.status} />
+                <div>
+                  {app.status === "pending" && (
+                    <button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive"
+                      onClick={() => setWithdrawId(app.id)}
+                    >
+                      <Ban className="size-4" />
+                      Withdraw
+                    </button>
+                  )}
+                  {app.status === "accepted" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      nativeButton={false}
+                      render={<Link href={`/messages?thread=${app.id}`} />}
+                    >
+                      <MessageSquare className="size-4" />
+                      Message
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       
     </>
   );
