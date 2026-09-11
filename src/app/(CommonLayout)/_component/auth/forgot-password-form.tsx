@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
+import { toast } from "@/components/ui/toast";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { requestPasswordReset, resetPassword, verifyPasswordResetOtp } from "@/services/auth.service";
 
 const emailSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -48,21 +51,56 @@ const resetSchema = z.object({
 type ResetStep = "email" | "otp" | "reset";
 
 export default function ForgotPasswordForm() {
+  const router = useRouter();
   const [step, setStep] = useState<ResetStep>("email");
+  const [resetToken, setResetToken] = useState("");
 
   const emailForm = useForm({
     defaultValues: { email: "" },
     validators: { onChange: emailSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        const result = await requestPasswordReset(value.email);
+        toast.add({ type: "success", description: result.message });
+        setStep("otp");
+      } catch (error) {
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
+      }
+    },
   });
 
   const otpForm = useForm({
     defaultValues: { code: "" },
     validators: { onChange: otpSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        const result = await verifyPasswordResetOtp({
+          email: emailForm.state.values.email,
+          code: value.code,
+        });
+        setResetToken(result.resetToken);
+        setStep("reset");
+      } catch (error) {
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
+      }
+    },
   });
 
   const resetForm = useForm({
     defaultValues: { newPassword: "" },
     validators: { onChange: resetSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        const result = await resetPassword({
+          token: resetToken,
+          newPassword: value.newPassword,
+        });
+        toast.add({ type: "success", description: result.message });
+        router.push("/login");
+      } catch (error) {
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
+      }
+    },
   });
 
   if (step === "otp") {
