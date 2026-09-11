@@ -32,6 +32,12 @@ import {
 } from "@/constants/options";
 import { envConfig } from "@/env";
 import type { IProfileFormValues, ProfileRole } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  createProfile,
+  updateProfile,
+  uploadProfilePhoto,
+} from "@/services/profile.service";
 import { useRouter } from "next/navigation";
 
 const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
@@ -70,6 +76,54 @@ export default function ProfileForm({
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const isEdit = !!initial;
+
+  const form = useForm({
+    defaultValues: {
+      role: initial?.role ?? "",
+      skills: initial?.skills ?? [],
+      interestedIndustries: initial?.interestedIndustries ?? [],
+      availableWeeklyCommitment: initial?.availableWeeklyCommitment ?? 0,
+      bio: initial?.bio ?? "",
+      portfolioUrl: initial?.portfolioUrl ?? "",
+      githubUrl: initial?.githubUrl ?? "",
+      linkedinUrl: initial?.linkedinUrl ?? "",
+      location: initial?.location ?? "",
+      photoUrl: initial?.photoUrl ?? null,
+    },
+    validators: { onChange: profileSchema },
+    onSubmit: async ({ value }) => {
+      const profileData = {
+        role: value.role as ProfileRole,
+        skills: value.skills,
+        interestedIndustries: value.interestedIndustries,
+        availableWeeklyCommitment: value.availableWeeklyCommitment,
+        bio: value.bio || undefined,
+        portfolioUrl: value.portfolioUrl || undefined,
+        githubUrl: value.githubUrl || undefined,
+        linkedinUrl: value.linkedinUrl || undefined,
+        location: value.location || undefined,
+        photoUrl: value.photoUrl,
+      };
+
+      try {
+        if (isEdit) {
+          await updateProfile(profileData);
+          toast.add({ type: "success", description: "Profile updated" });
+          onSuccess?.();
+        } else {
+          await createProfile(profileData);
+          toast.add({
+            type: "success",
+            description: "Profile created successfully",
+          });
+          router.push("/requirements/browse");
+        }
+      } catch (error) {
+        toast.add({ type: "error", description: getApiErrorMessage(error) });
+      }
+    },
+  });
+
   return (
     <form
       onSubmit={(e) => {
