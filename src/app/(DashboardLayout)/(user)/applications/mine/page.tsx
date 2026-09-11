@@ -30,7 +30,6 @@ export default async function MyApplicationsPage() {
           Track the status of your co-founder applications
         </p>
       </div>
-
       <MyApplicationsClient initialApplications={applications} />
     </div>
   );
