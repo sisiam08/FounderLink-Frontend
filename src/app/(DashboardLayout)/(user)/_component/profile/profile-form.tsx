@@ -248,6 +248,41 @@ export default function ProfileForm({
         />
       </FieldGroup>
 
+      <FieldGroup>
+        <form.Field
+          name="skills"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  Skills <span className="text-destructive">*</span>
+                </FieldLabel>
+                <p className="text-xs text-muted-foreground">
+                  Select your technical and professional skills. You can also
+                  type your own.
+                </p>
+                <MultiSelect
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  options={SKILL_OPTIONS}
+                  placeholder="Select your skills..."
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
+
+      
+
+      
+
+      
+
+      
 
     </form>
   );
