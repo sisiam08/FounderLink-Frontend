@@ -11,5 +11,36 @@ export default async function ApplicantsPage({
 }:{
     params:Promise<{id:string}>
 }){
-    return;
+    const {id}=await params;
+
+    let applications:IApplication[]=[];
+
+    try{
+        applications=await getRequirementApplications(id);
+    }
+    catch{
+        applications=[];
+    }
+
+
+    return(
+        <div className="space-y-6">
+            <Link
+            href="/startups/mine"
+            className="-ml-2 inline-flex items-center gap-1 rounded-md px-2.55 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                <ArrowLeft className="size-4"/>
+                Back to My Startups
+            </Link>
+
+            <div>
+                <h1 className="text-xl font-bond sm:text-2xl">Applicants</h1>
+
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Review and accept or reject candidates for this requirement
+                </p>
+            </div>
+
+            <ApplicantsClient id={id} initialApplications={applications}/>
+        </div>
+    );
 }
