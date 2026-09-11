@@ -22,6 +22,28 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
+
+const emailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+const otpSchema = z.object({
+  code: z
+    .string()
+    .length(6, "Verification code must be 6 digits")
+    .regex(/^\d{6}$/, "Verification code must contain only digits"),
+});
+
+const resetSchema = z.object({
+  newPassword: z
+    .string()
+    .min(8, "At least 8 characters")
+    .regex(/[A-Z]/, "At least one uppercase letter")
+    .regex(/[a-z]/, "At least one lowercase letter")
+    .regex(/\d/, "At least one number")
+    .regex(/[@$!%*?&]/, "At least one special character (@$!%*?&)"),
+});
 
 type ResetStep = "email" | "otp" | "reset";
 
@@ -30,14 +52,17 @@ export default function ForgotPasswordForm() {
 
   const emailForm = useForm({
     defaultValues: { email: "" },
+    validators: { onChange: emailSchema },
   });
 
   const otpForm = useForm({
     defaultValues: { code: "" },
+    validators: { onChange: otpSchema },
   });
 
   const resetForm = useForm({
     defaultValues: { newPassword: "" },
+    validators: { onChange: resetSchema },
   });
 
   if (step === "otp") {
