@@ -211,6 +211,44 @@ export default function ProfileForm({
           </p>
         </div>
       </div>
+
+      <FieldGroup>
+        <form.Field
+          name="role"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  Role <span className="text-destructive">*</span>
+                </FieldLabel>
+                <p className="text-xs text-muted-foreground">
+                  What is your primary area of expertise in a startup?
+                </p>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(v) => field.handleChange(v as ProfileRole)}
+                >
+                  <SelectTrigger id={field.name}>
+                    <SelectValue placeholder="Select your area of expertise" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROFILE_ROLES.map((r) => (
+                      <SelectItem key={r} value={r}>
+                        {PROFILE_ROLE_LABELS[r]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
+
+
     </form>
   );
 }
