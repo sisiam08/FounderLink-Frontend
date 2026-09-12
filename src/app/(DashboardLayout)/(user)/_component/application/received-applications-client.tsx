@@ -71,7 +71,33 @@ export default function ReceivedApplicationsClient({
 
   return (
     <>
-      
+      <div className="space-y-3">
+        {applications.map((app) => (
+          <Card key={app.id}>
+            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <Link
+                href={`/profile/${app.candidate?.id}`}
+                className="group flex min-w-0 items-center gap-3"
+              >
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground transition-shadow group-hover:ring-2 group-hover:ring-primary/40">
+                  {initials(app.candidate?.fullName ?? "?")}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-medium group-hover:underline">
+                    {app.candidate?.fullName}
+                  </p>
+                  <p className="truncate text-sm text-muted-foreground capitalize">
+                    {app.requirement?.startupIdea?.title} ·{" "}
+                    {app.requirement?.requiredRole} · Applied{" "}
+                    {formatDate(app.createdAt)}
+                  </p>
+                </div>
+              </Link>
+              
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       
     </>
