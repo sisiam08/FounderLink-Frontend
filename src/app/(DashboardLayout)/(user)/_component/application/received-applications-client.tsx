@@ -1,0 +1,54 @@
+"use client";
+
+import { useState } from "react";
+
+import { Check, MessageSquare, UsersRound, X } from "lucide-react";
+import Link from "next/link";
+
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { EmptyState } from "@/components/shared/empty-state";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "@/components/ui/toast";
+import type { IApplication } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  acceptApplication,
+  getReceivedApplications,
+  rejectApplication,
+} from "@/services/application.service";
+import { formatDate } from "@/helpers/date-utils";
+import { initials } from "@/helpers/string-utils";
+
+type Action = { type: "accept" | "reject"; appId: string };
+
+export default function ReceivedApplicationsClient({
+  initialApplications,
+}: {
+  initialApplications: IApplication[];
+}) {
+  const [applications, setApplications] =
+    useState<IApplication[]>(initialApplications);
+  const [action, setAction] = useState<Action | null>(null);
+
+  async function reload() {
+    try {
+      setApplications(await getReceivedApplications());
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    }
+  }
+
+  
+
+  
+
+  return (
+    <>
+      
+
+      
+    </>
+  );
+}

@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+import ReceivedApplicationsClient from "../../_component/application/received-applications-client";
 import type { IApplication } from "@/interfaces";
 import { getReceivedApplications } from "@/services/application.service";
 
