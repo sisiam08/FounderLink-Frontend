@@ -19,6 +19,11 @@ export interface ISignupResponse {
   expiresAt: string;
 }
 
+export interface IAuthRouteRule {
+  match: (pathname: string) => boolean;
+  allowedRoles: SystemRole[];
+}
+
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
