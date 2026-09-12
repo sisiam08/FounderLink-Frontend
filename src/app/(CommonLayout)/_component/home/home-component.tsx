@@ -28,14 +28,47 @@ const howWorkSteps = [
     "Apply, get accepted, talk",
     "Messaging unlocks when a founder accepts your application.",
   ],
-];
+] as const;
 
 const scoreBars: [string, number, number][] = [
   ["Role match", 26, 30],
   ["Skills overlap", 38, 45],
   ["Industry interest", 8, 10],
   ["Weekly commitment", 10, 15],
-];
+] as const;
+
+const features = [
+  [
+    Grid3X3,
+    "Multiple startup ideas, separately",
+    "Post more than one idea, each with its own co-founder requirements. Every role can be scored and filled independently.",
+  ],
+  [
+    Shield,
+    "Secure by default",
+    "Use email or Google sign-in with short-lived access tokens and protected sessions.",
+  ],
+  [
+    MessageCircle,
+    "Messaging that unlocks on trust",
+    "Chat opens once a founder accepts your application, so every conversation starts with mutual interest.",
+  ],
+  [
+    CheckCircle2,
+    "Track every application",
+    "See whether each application is pending, accepted, rejected, or withdrawn, with its original score.",
+  ],
+  [
+    Bell,
+    "Know the moment it matters",
+    "Get notified when someone applies, accepts, or replies without refreshing the page.",
+  ],
+  [
+    Clock,
+    "Sessions you control",
+    "See your active devices and revoke any session instantly from your account.",
+  ],
+] as const;
 
 export default function HomeComponent() {
   return (
@@ -179,6 +212,46 @@ export default function HomeComponent() {
                 </CardContent>
               </Card>
             </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="features"
+        className="bg-background px-5 py-16 sm:px-8 sm:py-20"
+      >
+        <div className="mx-auto max-w-295">
+          <ScrollReveal>
+            <div className="mx-auto mb-12 max-w-160 text-center">
+              <span className="mb-3.5 block font-mono text-xs tracking-wider text-primary uppercase">
+                Everything else
+              </span>
+              <h2 className="text-[clamp(28px,4vw,42px)] leading-[1.15] font-bold">
+                Built for finding a co-founder, specifically
+              </h2>
+              <p className="mt-4 text-[17px] leading-[1.6] text-muted-foreground">
+                Every feature exists because co-founder matching needs it.
+              </p>
+            </div>
+          </ScrollReveal>
+          <div className="grid gap-4 md:grid-cols-3">
+            {features.map(([Icon, title, description], index) => (
+              <ScrollReveal key={title} delay={index * 80}>
+                <Card className="h-full p-0">
+                  <CardContent className="p-9">
+                    <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-[10px] bg-secondary">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="mb-2.5 text-[17px] font-semibold text-card-foreground">
+                      {title}
+                    </h3>
+                    <p className="text-[14px] leading-[1.6] text-muted-foreground">
+                      {description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
