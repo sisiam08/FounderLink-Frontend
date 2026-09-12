@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedScoreBar, ScrollReveal } from "./home-interactive";
 import {
   Bell,
   CheckCircle2,
@@ -10,7 +11,6 @@ import {
   MessageCircle,
   Shield,
 } from "lucide-react";
-import { AnimatedScoreBar, ScrollReveal } from "./home-interactive";
 import Navbar from "../shared/navbar";
 import Footer from "../shared/footer";
 
@@ -75,7 +75,7 @@ const features = [
 export default function HomeComponent() {
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar/>
+      <Navbar />
 
       <header className="relative flex min-h-screen items-center overflow-hidden bg-[#0d1120] pt-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#1c2242_0%,#12172B_55%,#0d1120_100%)]" />
@@ -260,7 +260,69 @@ export default function HomeComponent() {
         </div>
       </section>
 
-      <Footer/>
+      <section className="border-y border-border bg-muted px-5 sm:px-8">
+        <div className="mx-auto flex max-w-295 flex-wrap items-center justify-between gap-10 py-10">
+          <ScrollReveal direction="right">
+            <div className="max-w-130">
+              <span className="mb-2.5 block font-mono text-xs tracking-wider text-primary uppercase">
+                Who this is for
+              </span>
+              <h3 className="mb-2.5 text-[22px] font-semibold text-foreground">
+                No resume gatekeeping
+              </h3>
+              <p className="text-[15px] leading-[1.65] text-muted-foreground">
+                Skills, role, and genuine availability matter more here than
+                years on a CV. That is the point for students, first-time
+                founders, and anyone whose best work is still ahead.
+              </p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal direction="left" delay={150}>
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                "Technical builders",
+                "Business founders",
+                "Designers",
+                "Marketers",
+                "First-time founders",
+              ].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-lg border border-border bg-card px-3.5 py-2 font-mono text-xs text-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="relative bg-[#0d1120] px-5 py-20 text-center text-white sm:px-8 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,#1c2242_0%,#12172B_60%)]" />
+        <ScrollReveal>
+          <div className="relative mx-auto max-w-295">
+            <h2 className="text-[clamp(30px,5vw,48px)] leading-[1.15] font-bold">
+              Your co-founder is scoring
+              <br />
+              your profile right now.
+            </h2>
+            <p className="mx-auto mt-5 mb-10 max-w-120 text-[17px] text-white/60">
+              Every hour your seat stays open is an hour someone else's isn't.
+            </p>
+            <Button
+              nativeButton={false}
+              size="lg"
+              className="bg-linear-to-r from-[#4338CA] to-[#7C3AED] px-7 py-3.5 text-base text-white shadow-lg shadow-[#7C3AED]/35"
+              render={<Link href="/signup" />}
+            >
+              Create your profile
+            </Button>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      <Footer />
     </div>
   );
 }
