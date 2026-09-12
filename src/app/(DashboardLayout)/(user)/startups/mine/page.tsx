@@ -1,11 +1,7 @@
-import { ArrowRight, Plus, Rocket } from "lucide-react";
-import Link from "next/link";
-
 import { EmptyState } from "@/components/shared/empty-state";
-import { StatusBadge } from "@/components/shared/status-badge";
-import { Card, CardContent } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
 import { getMyStartups } from "@/services/startup.service";
+import { Rocket } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
