@@ -11,6 +11,8 @@ import {
   Shield,
 } from "lucide-react";
 import { AnimatedScoreBar, ScrollReveal } from "./home-interactive";
+import Navbar from "../shared/navbar";
+import Footer from "../shared/footer";
 
 const howWorkSteps = [
   [
@@ -73,6 +75,8 @@ const features = [
 export default function HomeComponent() {
   return (
     <div className="flex min-h-screen flex-col">
+      <Navbar/>
+
       <header className="relative flex min-h-screen items-center overflow-hidden bg-[#0d1120] pt-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#1c2242_0%,#12172B_55%,#0d1120_100%)]" />
         <div className="pointer-events-none absolute inset-0 z-2 bg-linear-to-b from-transparent via-[#12172B]/25 to-background" />
@@ -255,6 +259,8 @@ export default function HomeComponent() {
           </div>
         </div>
       </section>
+
+      <Footer/>
     </div>
   );
 }
