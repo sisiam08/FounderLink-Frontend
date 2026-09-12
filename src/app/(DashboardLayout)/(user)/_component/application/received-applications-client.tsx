@@ -57,7 +57,17 @@ export default function ReceivedApplicationsClient({
     }
   }
 
-  
+  if (applications.length === 0) {
+    return (
+      <EmptyState
+        icon={<UsersRound className="size-12" />}
+        title="No applications yet"
+        description="When someone applies to one of your startup requirements, they'll appear here."
+        actionLabel="View my startups"
+        actionHref="/startups/mine"
+      />
+    );
+  }
 
   return (
     <>
