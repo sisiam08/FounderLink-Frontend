@@ -54,3 +54,54 @@ export function ScrollReveal({
     </div>
   );
 }
+
+export function AnimatedScoreBar({
+  label,
+  score,
+  max,
+  delay,
+}: {
+  label: string;
+  score: number;
+  max: number;
+  delay: number;
+}) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    let timer: number | undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        timer = window.setTimeout(() => setVisible(true), delay);
+        observer.disconnect();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [delay]);
+
+  return (
+    <div ref={ref} className="mb-5 last:mb-0">
+      <div className="mb-2 flex justify-between text-xs text-white/75">
+        <span>{label}</span>
+        <span className="font-mono text-white">
+          {score}/{max}
+        </span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+        <div
+          className="h-full rounded-full bg-linear-to-r from-[#6C63D6] to-[#A480F2] transition-all duration-1000 ease-out"
+          style={{ width: visible ? `${(score / max) * 100}%` : "0%" }}
+        />
+      </div>
+    </div>
+  );
+}

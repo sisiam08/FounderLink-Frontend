@@ -10,7 +10,7 @@ import {
   MessageCircle,
   Shield,
 } from "lucide-react";
-import { ScrollReveal } from "./home-interactive";
+import { AnimatedScoreBar, ScrollReveal } from "./home-interactive";
 
 const howWorkSteps = [
   [
@@ -28,6 +28,13 @@ const howWorkSteps = [
     "Apply, get accepted, talk",
     "Messaging unlocks when a founder accepts your application.",
   ],
+];
+
+const scoreBars: [string, number, number][] = [
+  ["Role match", 26, 30],
+  ["Skills overlap", 38, 45],
+  ["Industry interest", 8, 10],
+  ["Weekly commitment", 10, 15],
 ];
 
 export default function HomeComponent() {
@@ -125,6 +132,56 @@ export default function HomeComponent() {
         </div>
       </section>
 
+      <section
+        id="engine"
+        className="bg-[#12172B] px-5 py-16 text-white sm:px-8 sm:py-20"
+      >
+        <div className="mx-auto max-w-295">
+          <div className="grid items-center gap-16 md:grid-cols-2">
+            <ScrollReveal direction="right">
+              <div>
+                <span className="mb-3.5 block font-mono text-xs tracking-wider text-[#7C3AED] uppercase">
+                  The matching engine
+                </span>
+                <h2 className="text-[clamp(28px,4vw,42px)] leading-[1.15] font-bold">
+                  A score you can actually defend
+                </h2>
+                <p className="mt-4 text-[16px] leading-[1.7] text-white/62">
+                  No embeddings and no hidden weights. Every compatibility score
+                  is four plain factors added together and recomputed fresh.
+                </p>
+                <p className="mt-8 border-l-2 border-[#7C3AED] pl-4 font-mono text-xs leading-[1.6] text-[#A480F2]">
+                  roleScore + skillsScore + industryScore + commitmentScore =
+                  your total, out of 100.
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="left" delay={200}>
+              <Card className="border-white/10 bg-[#191F35] p-0 text-white">
+                <CardContent className="p-7 sm:p-9">
+                  <div className="mb-8 flex items-baseline gap-2.5">
+                    <span className="bg-linear-to-r from-[#A480F2] to-[#6C63D6] bg-clip-text text-[56px] leading-none font-bold text-transparent">
+                      82
+                    </span>
+                    <span className="font-mono text-base text-white/40">
+                      / 100 compatibility
+                    </span>
+                  </div>
+                  {scoreBars.map(([label, score, max], index) => (
+                    <AnimatedScoreBar
+                      key={label}
+                      label={label}
+                      score={score}
+                      max={max}
+                      delay={index * 200}
+                    />
+                  ))}
+                </CardContent>
+              </Card>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
