@@ -10,6 +10,25 @@ import {
   MessageCircle,
   Shield,
 } from "lucide-react";
+import { ScrollReveal } from "./home-interactive";
+
+const howWorkSteps = [
+  [
+    "01",
+    "Build your profile once",
+    "Role, skills, industries you care about, and hours you can actually give.",
+  ],
+  [
+    "02",
+    "Browse scored requirements",
+    "Every open co-founder seat is ranked against your profile in real time.",
+  ],
+  [
+    "03",
+    "Apply, get accepted, talk",
+    "Messaging unlocks when a founder accepts your application.",
+  ],
+];
 
 export default function HomeComponent() {
   return (
@@ -67,6 +86,45 @@ export default function HomeComponent() {
           </div>
         </div>
       </header>
+
+      <section id="how" className="bg-background px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-295">
+          <ScrollReveal>
+            <div className="mx-auto mb-12 max-w-160 text-center">
+              <span className="mb-3.5 block font-mono text-xs tracking-wider text-primary uppercase">
+                The path
+              </span>
+              <h2 className="text-[clamp(28px,4vw,42px)] leading-[1.15] font-bold text-foreground">
+                From idea to inbox, in three steps
+              </h2>
+              <p className="mt-4 text-[17px] leading-[1.6] text-muted-foreground">
+                Every startup idea can post its own co-founder requirements,
+                scored against your profile the moment you look at it.
+              </p>
+            </div>
+          </ScrollReveal>
+          <div className="grid gap-8 md:grid-cols-3">
+            {howWorkSteps.map(([number, title, description], index) => (
+              <ScrollReveal key={number} delay={index * 150}>
+                <Card className="h-full p-0">
+                  <CardContent className="p-9">
+                    <div className="mb-6 flex h-9 w-9 items-center justify-center rounded-[10px] bg-secondary font-mono text-xs font-medium text-primary">
+                      {number}
+                    </div>
+                    <h3 className="mb-3 text-xl font-semibold text-card-foreground">
+                      {title}
+                    </h3>
+                    <p className="text-[15px] leading-[1.6] text-muted-foreground">
+                      {description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
