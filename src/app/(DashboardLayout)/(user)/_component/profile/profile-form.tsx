@@ -451,6 +451,25 @@ export default function ProfileForm({
         </div>
       </FieldGroup>
 
+      <form.Subscribe
+        selector={(state) => ({
+          isSubmitting: state.isSubmitting,
+          canSubmit: state.canSubmit,
+        })}
+        children={({ isSubmitting, canSubmit }) => (
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!canSubmit || isSubmitting}
+          >
+            {isSubmitting
+              ? isEdit
+                ? "Saving..."
+                : "Creating..."
+              : (submitLabel ?? (isEdit ? "Save Changes" : "Create Profile"))}
+          </Button>
+        )}
+      />
     </form>
   );
 }
