@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { MonitorSmartphone, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "@/components/ui/toast";
 import type { IUserSession } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  getActiveSessions,
+  logout,
+  revokeSession,
+} from "@/services/auth.service";
 import { formatDateTime } from "@/helpers/date-utils";
 
 export default function SessionsClient({
@@ -22,7 +32,37 @@ export default function SessionsClient({
 }: {
   initialSessions: IUserSession[];
 }) {
-  const [sessions, setSessions] = useState<IUserSession[]>(initialSessions); 
+  const router = useRouter();
+  const [sessions, setSessions] = useState<IUserSession[]>(initialSessions);
+  const [revokeId, setRevokeId] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    try {
+      setSessions(await getActiveSessions());
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    }
+  }, []);
+
+  async function handleRevoke(id: string) {
+    try {
+      await revokeSession(id);
+      toast.add({ type: "success", description: "Session revoked" });
+      await reload();
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await logout();
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    } finally {
+      router.push("/login");
+    }
+  }
 
   if (sessions.length === 0) {
     return (
@@ -58,6 +98,7 @@ export default function SessionsClient({
                   <Button
                     size="sm"
                     variant="outline"
+                    onClick={handleLogout}
                     className="shrink-0"
                   >
                     Log out
@@ -67,6 +108,7 @@ export default function SessionsClient({
                     size="sm"
                     variant="ghost"
                     className="shrink-0 text-destructive"
+                    onClick={() => setRevokeId(session.id)}
                   >
                     <Trash2 className="size-4" />
                     Revoke
@@ -129,6 +171,7 @@ export default function SessionsClient({
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={handleLogout}
                       >
                         Log out
                       </Button>
@@ -137,6 +180,7 @@ export default function SessionsClient({
                         size="sm"
                         variant="ghost"
                         className="text-destructive"
+                        onClick={() => setRevokeId(session.id)}
                       >
                         <Trash2 className="size-4" />
                         Revoke
@@ -149,6 +193,15 @@ export default function SessionsClient({
           </Table>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={!!revokeId}
+        onOpenChange={(open) => !open && setRevokeId(null)}
+        title="Revoke this session?"
+        description="The device will be logged out immediately."
+        confirmLabel="Revoke"
+        onConfirm={() => revokeId && void handleRevoke(revokeId)}
+      />
     </>
   );
 }
