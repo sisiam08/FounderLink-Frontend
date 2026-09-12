@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Navbar from "../shared/navbar";
 import Footer from "../shared/footer";
+import { HeroCanvas } from "./hero-canvas";
 
 const howWorkSteps = [
   [
@@ -79,6 +80,7 @@ export default function HomeComponent() {
 
       <header className="relative flex min-h-screen items-center overflow-hidden bg-[#0d1120] pt-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#1c2242_0%,#12172B_55%,#0d1120_100%)]" />
+        <HeroCanvas />
         <div className="pointer-events-none absolute inset-0 z-2 bg-linear-to-b from-transparent via-[#12172B]/25 to-background" />
         <div className="relative z-3 w-full px-5 pt-12 pb-24 sm:px-8 sm:pb-28">
           <div className="mx-auto max-w-295 text-center">
