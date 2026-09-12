@@ -40,7 +40,22 @@ export default function ReceivedApplicationsClient({
     }
   }
 
-  
+  async function handleAction(current: Action) {
+    try {
+      if (current.type === "accept") {
+        await acceptApplication(current.appId);
+      } else {
+        await rejectApplication(current.appId);
+      }
+      toast.add({
+        type: "success",
+        description: `Application ${current.type === "accept" ? "accepted" : "rejected"}`,
+      });
+      await reload();
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    }
+  }
 
   
 
