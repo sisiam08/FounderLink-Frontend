@@ -93,7 +93,44 @@ export default function ReceivedApplicationsClient({
                   </p>
                 </div>
               </Link>
-              
+              <div className="flex shrink-0 items-center gap-2">
+                <StatusBadge status={app.status} />
+                {app.status === "pending" && (
+                  <>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() =>
+                        setAction({ type: "accept", appId: app.id })
+                      }
+                    >
+                      <Check className="size-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Accept</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setAction({ type: "reject", appId: app.id })
+                      }
+                    >
+                      <X className="size-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Reject</span>
+                    </Button>
+                  </>
+                )}
+                {app.status === "accepted" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    nativeButton={false}
+                    render={<Link href={`/messages?thread=${app.id}`} />}
+                  >
+                    <MessageSquare className="size-4" />
+                    Message
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}
