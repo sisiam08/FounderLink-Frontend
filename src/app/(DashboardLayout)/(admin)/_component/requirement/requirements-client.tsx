@@ -57,6 +57,45 @@ export default function RequirementsClient({
   const initializedRef = useRef(false);
   const requestIdRef = useRef(0);
 
+  const fetchRequirements = useCallback(
+  async (targetPage = page) => {
+    const requestId = ++requestIdRef.current;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await getAdminRequirements({
+        status,
+        role,
+        page: targetPage,
+      });
+
+      if (requestId !== requestIdRef.current) return;
+
+      setRequirements(res.requirements);
+      setTotal(res.total);
+      setLimit(res.limit);
+    } catch (error) {
+      if (requestId !== requestIdRef.current) return;
+
+      const message = getApiErrorMessage(error);
+
+      setError(message);
+
+      toast.add({
+        type: "error",
+        description: message,
+      });
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
+    }
+  },
+  [status, role, page]
+);
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">
