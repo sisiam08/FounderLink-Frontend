@@ -33,7 +33,7 @@ import {
 } from "@/services/admin.service";
 import { formatDate } from "@/helpers/date-utils";
 
-function RequirementsClient({
+export default function RequirementsClient({
   initialRequirements,
   initialTotal,
   initialLimit,
@@ -88,7 +88,6 @@ function RequirementsClient({
       initializedRef.current = true;
       return;
     }
-    
     void fetchRequirements();
     return () => {
       requestIdRef.current += 1;
@@ -159,7 +158,7 @@ function RequirementsClient({
           </Select>
         </div>
       </div>
- 
+
       {loading ? (
         <SkeletonRows />
       ) : error ? (
@@ -266,5 +265,3 @@ function RequirementsClient({
     </div>
   );
 }
-
-export { RequirementsClient };
