@@ -12,6 +12,14 @@ export default async function AdminRequirementsPage() {
     limit: 20,
   };
 
+  let initialError: string | undefined;
+
+  try {
+    data = await getAdminRequirements({ page: 1 });
+  } catch {
+    initialError = "Unable to load requirements.";
+  }
+
   return (
     <RequirementsClient
       initialRequirements={data.requirements}
