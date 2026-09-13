@@ -2,6 +2,14 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import StartupForm from "../../../_component/startup/startup-form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
 import { getStartupById } from "@/services/startup.service";
 
@@ -33,7 +41,15 @@ export default async function EditStartupPage({
         Back
       </Link>
 
-      
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Edit Startup Idea</CardTitle>
+          <CardDescription>Update your startup details</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <StartupForm startup={startup} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
