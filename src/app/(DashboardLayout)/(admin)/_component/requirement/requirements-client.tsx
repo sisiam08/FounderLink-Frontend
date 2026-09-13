@@ -96,11 +96,73 @@ export default function RequirementsClient({
   [status, role, page]
 );
 
+
+    useEffect(() => {
+  if (!initializedRef.current) {
+    initializedRef.current = true;
+    return;
+  }
+
+  void fetchRequirements();
+
+  return () => {
+    requestIdRef.current += 1;
+  };
+    }, [fetchRequirements]);
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">
         Content Moderation — Requirements
       </h1>
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4">
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Status
+          </label>
+          <Select
+            value={status}
+            onValueChange={(v) => {
+              setStatus(v as string);
+              setPage(1);
+              setLoading(true);
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Role
+          </label>
+          <Select
+            value={role}
+            onValueChange={(v) => {
+              setRole(v as string);
+              setPage(1);
+              setLoading(true);
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="technical">Technical</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem value="business">Business</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
     </div>
   );
 }
