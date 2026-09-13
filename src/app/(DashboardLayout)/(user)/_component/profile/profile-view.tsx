@@ -304,6 +304,46 @@ export default function ProfileView({
           </CardContent>
         </Card>
       )}
+
+      {isOwnProfile && (
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex size-6 items-center justify-center rounded-md bg-muted">
+                  <Shield className="size-3.5 text-muted-foreground" />
+                </span>
+                <div>
+                  <CardTitle className="text-sm font-semibold">
+                    Account Security
+                  </CardTitle>
+                  <CardDescription className="mt-0.5 text-xs">
+                    Manage password, sessions and devices
+                  </CardDescription>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  nativeButton={false}
+                  render={<Link href="/change-password" />}
+                  variant="outline"
+                  size="sm"
+                >
+                  Change Password
+                </Button>
+                <Button
+                  nativeButton={false}
+                  render={<Link href="/sessions" />}
+                  variant="outline"
+                  size="sm"
+                >
+                  Manage Sessions
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+      )}
     </div>
   );
 }
