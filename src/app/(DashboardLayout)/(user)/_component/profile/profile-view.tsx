@@ -56,6 +56,55 @@ function loadPhoto(photoUrl: string | null) {
   }
 }
 
+function SocialLinks({ profile }: { profile: IProfile }) {
+  const links: {
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+  }[] = [];
+  if (profile.portfolioUrl) {
+    links.push({
+      href: profile.portfolioUrl,
+      icon: <Globe className="size-3.5" />,
+      label: "Portfolio",
+    });
+  }
+  if (profile.githubUrl) {
+    links.push({
+      href: profile.githubUrl,
+      icon: <Code2 className="size-3.5" />,
+      label: "GitHub",
+    });
+  }
+  if (profile.linkedinUrl) {
+    links.push({
+      href: profile.linkedinUrl,
+      icon: <Link2 className="size-3.5" />,
+      label: "LinkedIn",
+    });
+  }
+
+  if (links.length === 0) return null;
+
+  return (
+    <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
+      {links.map((link) => (
+        <a
+          key={link.label}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          {link.icon}
+          {link.label}
+          <ExternalLink className="size-3 opacity-50" />
+        </a>
+      ))}
+    </div>
+  );
+}
+
 export default function ProfileView({
   initialProfile,
   isOwnProfile,
@@ -202,6 +251,7 @@ export default function ProfileView({
             </p>
           )}
 
+          <SocialLinks profile={profile} />
         </CardContent>
       </Card>
 
