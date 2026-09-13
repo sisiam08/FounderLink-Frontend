@@ -29,7 +29,10 @@ import {
 import { PROFILE_ROLE_LABELS } from "@/constants/options";
 import { envConfig } from "@/env";
 import type { IProfile, ProfileRole } from "@/interfaces";
+import { getMyProfile } from "@/services/profile.service";
 import { initials } from "@/helpers/string-utils";
+import { toast } from "@/components/ui/toast";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 const ROLE_COLORS: Record<ProfileRole, string> = {
   technical: "bg-blue-500/10 text-blue-500",
@@ -61,7 +64,47 @@ export default function ProfileView({
   isOwnProfile: boolean;
 }) {
   const [profile, setProfile] = useState<IProfile | null>(initialProfile);
-  setProfile(initialProfile);
+  const [editing, setEditing] = useState(false);
+
+  async function reload() {
+    try {
+      setProfile(await getMyProfile());
+    } catch (error) {
+      toast.add({ type: "error", description: getApiErrorMessage(error) });
+    }
+  }
+
+  if (editing && isOwnProfile) {
+    return (
+      <div className="max-w-2xl space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-xl font-bold">Edit Profile</h1>
+          <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>
+            Cancel
+          </Button>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <ProfileForm
+              initial={{
+                role: profile.role,
+                skills: profile.skills,
+                interestedIndustries: profile.interestedIndustries,
+                availableWeeklyCommitment: profile.availableWeeklyCommitment,
+                bio: profile.bio ?? undefined,
+                portfolioUrl: profile.portfolioUrl ?? undefined,
+                githubUrl: profile.githubUrl ?? undefined,
+                linkedinUrl: profile.linkedinUrl ?? undefined,
+                location: profile.location ?? undefined,
+                photoUrl: profile.photoUrl,
+              }}
+              onSuccess={reload}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const photoSrc = loadPhoto(profile.photoUrl);
 
@@ -88,6 +131,17 @@ export default function ProfileView({
                 </div>
               )}
             </div>
+            {isOwnProfile && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setEditing(true)}
+                className="mb-1"
+              >
+                <Pencil className="size-3.5" />
+                Edit Profile
+              </Button>
+            )}
           </div>
 
           <div className="space-y-1.5">
