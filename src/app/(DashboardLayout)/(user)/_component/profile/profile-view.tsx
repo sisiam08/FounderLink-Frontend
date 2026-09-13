@@ -74,6 +74,27 @@ export default function ProfileView({
     }
   }
 
+  if (!profile) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          {isOwnProfile ? (
+            <>
+              <p className="mb-4 text-muted-foreground">
+                You haven't created a profile yet.
+              </p>
+              <Button nativeButton={false} render={<Link href="/onboarding" />}>
+                Create Profile
+              </Button>
+            </>
+          ) : (
+            <p className="text-muted-foreground">Profile not found.</p>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (editing && isOwnProfile) {
     return (
       <div className="max-w-2xl space-y-6">
@@ -180,6 +201,7 @@ export default function ProfileView({
               {profile.bio}
             </p>
           )}
+
         </CardContent>
       </Card>
 
