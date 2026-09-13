@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import StartupDetailClient from "../../_component/startup/startup-detail-client";
+import StartupActions from "../../_component/startup/startup-actions";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IStartupIdea } from "@/interfaces";
 import { getStartupById } from "@/services/startup.service";
-import { StatusBadge } from "@/components/shared/status-badge";
-import StartupActions from "../../_component/startup/startup-actions";
 
 export default async function StartupDetailPage({
   params,
@@ -50,6 +51,30 @@ export default async function StartupDetailPage({
         <StartupActions id={startup.id} status={startup.status} />
       </div>
 
+  <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Description</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm whitespace-pre-wrap text-muted-foreground">
+            {startup.fullDescription}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {startup.industries.map((ind) => (
+              <span
+                key={ind}
+                className="inline-flex shrink-0 items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+              >
+                <Tag className="size-3" />
+                {ind}
+              </span>
+            ))}
+            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground capitalize">
+              {startup.startupStage} stage
+            </span>
+          </div>
+        </CardContent>
+      </Card>
 
       <StartupDetailClient id={startup.id} initialStartup={startup} />
     </div>
