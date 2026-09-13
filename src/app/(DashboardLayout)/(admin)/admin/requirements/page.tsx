@@ -19,12 +19,12 @@ export default async function AdminRequirementsPage() {
   } catch {
     initialError = "Unable to load requirements.";
   }
-
   return (
     <RequirementsClient
       initialRequirements={data.requirements}
       initialTotal={data.total}
       initialLimit={data.limit}
+      initialError={initialError}
     />
   );
 }
