@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import StartupDetailClient from "../../_component/startup/startup-detail-client";
 import type { IStartupIdea } from "@/interfaces";
 import { getStartupById } from "@/services/startup.service";
+import { StatusBadge } from "@/components/shared/status-badge";
+import StartupActions from "../../_component/startup/startup-actions";
 
 export default async function StartupDetailPage({
   params,
@@ -34,9 +36,20 @@ export default async function StartupDetailPage({
         Back to My Startups
       </Link>
 
-      
+        
+   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">{startup.title}</h1>
+            <StatusBadge status={startup.status} />
+          </div>
+          <p className="mt-1 text-muted-foreground">
+            {startup.shortDescription}
+          </p>
+        </div>
+        <StartupActions id={startup.id} status={startup.status} />
+      </div>
 
-      
 
       <StartupDetailClient id={startup.id} initialStartup={startup} />
     </div>
