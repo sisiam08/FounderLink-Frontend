@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import Link from "next/link";
 
 import { StatusBadge } from "@/components/shared/status-badge";
 import { SkeletonRows } from "@/components/shared/skeletons";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
 import {
   Table,
   TableBody,
@@ -30,9 +32,14 @@ export default function UsersClient({
   initialLimit: number;
   initialError?: string;
 }) {
+  const [page, setPage] = useState(1);
   const [users, setUsers] = useState(initialUsers);
+  const [total, setTotal] = useState(initialTotal);
+  const [limit, setLimit] = useState(initialLimit);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(initialError ?? null);
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="space-y-6">
@@ -98,6 +105,36 @@ export default function UsersClient({
             </Table>
           </CardContent>
         </Card>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={page <= 1}
+            onClick={() => {
+              setPage(page - 1);
+              setLoading(true);
+            }}
+          >
+            <ChevronLeft className="size-4" />
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={page >= totalPages}
+            onClick={() => {
+              setPage(page + 1);
+              setLoading(true);
+            }}
+          >
+            <ChevronRight className="size-4" />
+          </Button>
+        </div>
       )}
     </div>
   );
