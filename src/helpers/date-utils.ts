@@ -31,6 +31,16 @@ export function formatSignupDate(value: string): string {
   });
 }
 
+export function formatConversationTime(value?: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  const now = new Date();
+  const today = date.toDateString() === now.toDateString();
+  return today
+    ? date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+    : date.toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
 export function timeAgo(date: string | Date | null): string {
   if (!date) return "—";
   const now = Date.now();
