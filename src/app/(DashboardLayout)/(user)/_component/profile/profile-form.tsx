@@ -38,11 +38,11 @@ import {
   updateProfile,
   uploadProfilePhoto,
 } from "@/services/profile.service";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // পরের page-এ যায়
 
 const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
 
-const urlSchema = z
+const urlSchema = z     // zod validation profileSchema দিয়ে কোন field required, কত minimum/maximum হবে, URL valid কি না—এসব check করা হয়
   .string()
   .refine((v) => v === "" || /^https?:\/\//.test(v), "Must be a valid URL");
 
@@ -64,20 +64,20 @@ const profileSchema = z.object({
   photoUrl: z.string().nullable(),
 });
 
-export default function ProfileForm({
+export default function ProfileForm({ //এটাই পুরো form তৈরি, validation, submit এবং API call handle করে।
   initial,
   submitLabel,
-  onSuccess,
+  onSuccess, //props anyone can acess 
 }: {
-  initial?: Partial<IProfileFormValues>;
+  initial?: Partial<IProfileFormValues>; //props type 
   submitLabel?: string;
   onSuccess?: () => void;
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-  const isEdit = !!initial;
+  const isEdit = !!initial; //ediable 
 
-  const form = useForm({
+  const form = useForm({   //TanStack Form.  এখানে সব field-এর value রাখা হয় এবং submit handle করা হয়
     defaultValues: {
       role: initial?.role ?? "",
       skills: initial?.skills ?? [],
@@ -106,7 +106,7 @@ export default function ProfileForm({
       };
 
       try {
-        if (isEdit) {
+        if (isEdit) { //Toast ব্যবহার করা হয়েছে success এবং error দেখানোর জন্য।
           await updateProfile(profileData);
           toast.add({ type: "success", description: "Profile updated" });
           onSuccess?.();
@@ -116,7 +116,7 @@ export default function ProfileForm({
             type: "success",
             description: "Profile created successfully",
           });
-          router.push("/requirements/browse");
+          router.push("/requirements/browse"); //for go next page
         }
       } catch (error) {
         toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -124,7 +124,7 @@ export default function ProfileForm({
     },
   });
 
-  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {  // photo upload
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
@@ -143,7 +143,7 @@ export default function ProfileForm({
       const fd = new FormData();
       fd.append("file", file);
       const result = await uploadProfilePhoto(fd);
-      form.setFieldValue("photoUrl", result.photoUrl);
+      form.setFieldValue("photoUrl", result.photoUrl);// photo in url
       toast.add({ type: "success", description: "Photo uploaded" });
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -160,10 +160,10 @@ export default function ProfileForm({
     : null;
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit(e);
+    <form //validation check
+      onSubmit={(e) => { //when press submit when event(e) trigger 
+        e.preventDefault();  //browser a default behavior off kore 
+        form.handleSubmit(e); 
       }}
       className="space-y-6"
     >
@@ -212,7 +212,7 @@ export default function ProfileForm({
         </div>
       </div>
 
-      <FieldGroup>
+      <FieldGroup> // UI Form Fields
         <form.Field
           name="role"
           children={(field) => {
