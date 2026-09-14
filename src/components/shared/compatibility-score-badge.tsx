@@ -1,4 +1,5 @@
-import { cn, scoreBg } from "@/lib/utils";
+import { scoreBg } from "@/helpers/score-utils";
+import { cn } from "@/lib/utils";
 
 export default function CompatibilityScoreBadge({
   score,
