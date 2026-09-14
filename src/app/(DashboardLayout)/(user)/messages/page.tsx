@@ -11,8 +11,8 @@ import { toast } from "@/components/ui/toast";
 import type { IConversation, IUser } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getCurrentUser } from "@/services/auth.service";
-import { initials } from "@/helpers/string-utils";
 import { getConversations } from "@/services/message.service";
+import { initials } from "@/helpers/string-utils";
 import ChatThread from "../_component/message/chat-thread";
 
 function formatConversationTime(value?: string | null) {
