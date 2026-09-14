@@ -29,9 +29,9 @@ import {
 import { formatDate } from "@/helpers/date-utils";
 
 export default function MyApplicationsClient({
-  initialApplications,
+  initialApplications, 
 }: {
-  initialApplications: IApplication[];
+  initialApplications: IApplication[];  
 }) {
   const [applications, setApplications] =
     useState<IApplication[]>(initialApplications);
@@ -39,7 +39,7 @@ export default function MyApplicationsClient({
 
   async function reload() {
     try {
-      setApplications(await getMyApplications());
+      setApplications(await getMyApplications());  
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
     }
@@ -55,7 +55,7 @@ export default function MyApplicationsClient({
     }
   }
 
-  if (applications.length === 0) {
+  if (applications.length === 0) {  
     return (
       <EmptyState
         icon={<MessageSquare className="size-12" />}
@@ -69,7 +69,7 @@ export default function MyApplicationsClient({
 
   return (
     <>
-    <div className="flex flex-col gap-3 sm:hidden">
+      <div className="flex flex-col gap-3 sm:hidden">
         {applications.map((app) => (
           <Card key={app.id}>
             <CardContent className="space-y-3 p-4">
@@ -92,7 +92,7 @@ export default function MyApplicationsClient({
                 <StatusBadge status={app.status} />
                 <div>
                   {app.status === "pending" && (
-                    <button
+                    <Button
                       size="sm"
                       variant="ghost"
                       className="text-destructive"
@@ -100,7 +100,7 @@ export default function MyApplicationsClient({
                     >
                       <Ban className="size-4" />
                       Withdraw
-                    </button>
+                    </Button>
                   )}
                   {app.status === "accepted" && (
                     <Button
@@ -118,9 +118,9 @@ export default function MyApplicationsClient({
             </CardContent>
           </Card>
         ))}
-    </div>
+      </div>
 
-    <Card className="hidden sm:block">
+      <Card className="hidden sm:block">
         <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader>
@@ -184,9 +184,9 @@ export default function MyApplicationsClient({
             </TableBody>
           </Table>
         </CardContent>
-    </Card>
+      </Card>
 
-    <ConfirmDialog
+      <ConfirmDialog
         open={!!withdrawId}
         onOpenChange={(open) => !open && setWithdrawId(null)}
         title="Withdraw this application?"
