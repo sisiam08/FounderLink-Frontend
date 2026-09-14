@@ -1,22 +1,69 @@
 "use client";
 
-import {  useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MessageSquare } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { SkeletonRows } from "@/components/shared/skeletons";
 import { Card } from "@/components/ui/card";
+import { toast } from "@/components/ui/toast";
 import type { IConversation, IUser } from "@/interfaces";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { getCurrentUser } from "@/services/auth.service";
 import { initials } from "@/helpers/string-utils";
-import { formatConversationTime } from "@/helpers/date-utils";
+import { getConversations } from "@/services/message.service";
+import ChatThread from "../_component/message/chat-thread";
+
+function formatConversationTime(value?: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  const now = new Date();
+  const today = date.toDateString() === now.toDateString();
+  return today
+    ? date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+    : date.toLocaleDateString([], { month: "short", day: "numeric" });
+}
 
 export default function MessagesPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const activeThread = searchParams.get("thread");
+  const [user, setUser] = useState<IUser | null>(null);
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([getCurrentUser(), getConversations()])
+      .then(([currentUser, data]) => {
+        if (!active) return;
+        setUser(currentUser);
+        setConversations(data);
+      })
+      .catch((requestError) => {
+        if (!active) return;
+        const message = getApiErrorMessage(requestError);
+        setError(message);
+        toast.add({ type: "error", description: message });
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const activeConversation = useMemo(
+    () => conversations.find((conversation) => conversation.applicationId === activeThread),
+    [activeThread, conversations]
+  );
+
+  function openThread(applicationId: string) {
+    router.push(`/messages?thread=${applicationId}`);
+  }
 
   return (
     <div className="mx-auto flex h-[calc(100dvh-7rem)] min-h-0 max-w-5xl flex-col gap-4 overflow-hidden">
@@ -51,6 +98,7 @@ export default function MessagesPage() {
                   <button
                     key={conversation.applicationId}
                     type="button"
+                    onClick={() => openThread(conversation.applicationId)}
                     className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors hover:bg-muted ${activeThread === conversation.applicationId ? "bg-muted" : ""}`}
                   >
                     <div className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
@@ -69,6 +117,21 @@ export default function MessagesPage() {
               })}
             </div>
           </aside>
+
+          <section className={`min-h-0 ${activeThread ? "block" : "hidden md:block"}`}>
+            {activeThread && activeConversation ? (
+              <ChatThread
+                applicationId={activeThread}
+                conversation={activeConversation}
+                currentUserId={user?.id}
+                onBack={() => router.push("/messages")}
+              />
+            ) : (
+              <div className="flex h-full min-h-96 items-center justify-center p-6 text-center text-sm text-muted-foreground">
+                Select a conversation to start messaging.
+              </div>
+            )}
+          </section>
         </div>
       )}
     </div>
