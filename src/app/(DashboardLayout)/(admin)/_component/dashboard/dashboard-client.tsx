@@ -14,7 +14,6 @@ import {
   YAxis,
 } from "recharts";
 
-import { SkeletonStatGrid } from "@/components/shared/skeletons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { getApiErrorMessage } from "@/lib/api-error";
@@ -113,14 +112,6 @@ export default function DashboardClient() {
     };
   }, []);
 
-  if (overviewLoading && !overview) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <SkeletonStatGrid />
-      </div>
-    );
-  }
 
   const appChartData = Object.entries(appStats?.byStatus ?? {}).map(
     ([status, count]) => ({ name: status, count })
