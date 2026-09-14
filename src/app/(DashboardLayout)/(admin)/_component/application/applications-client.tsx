@@ -98,6 +98,75 @@ export default function ApplicationsClient({
   const totalPages = Math.ceil(total / limit);
 
   return (
-    
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Applications Oversight</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Cross-user application visibility for dispute investigation
+          (read-only)
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4">
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Status
+          </label>
+          <Select
+            value={status}
+            onValueChange={(v) => {
+              setStatus(v as string);
+              setPage(1);
+              setLoading(true);
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="accepted">Accepted</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Requirement ID
+          </label>
+          <Input
+            value={requirementId}
+            onChange={(e) => {
+              setRequirementId(e.target.value);
+              setPage(1);
+              setLoading(true);
+            }}
+            placeholder="UUID..."
+            className="w-full sm:w-64"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Candidate ID
+          </label>
+          <Input
+            value={candidateId}
+            onChange={(e) => {
+              setCandidateId(e.target.value);
+              setPage(1);
+              setLoading(true);
+            }}
+            placeholder="UUID..."
+            className="w-full sm:w-64"
+          />
+        </div>
+      </div>
+
+        
+
+      
+    </div>
   );
 }
