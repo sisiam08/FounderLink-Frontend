@@ -64,20 +64,20 @@ const profileSchema = z.object({
   photoUrl: z.string().nullable(),
 });
 
-export default function ProfileForm({ //এটাই পুরো form তৈরি, validation, submit এবং API call handle করে।
+export default function ProfileForm({ 
   initial,
   submitLabel,
-  onSuccess, //props anyone can acess 
+  onSuccess, 
 }: {
-  initial?: Partial<IProfileFormValues>; //props type 
+  initial?: Partial<IProfileFormValues>;  
   submitLabel?: string;
   onSuccess?: () => void;
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-  const isEdit = !!initial; //ediable 
+  const isEdit = !!initial; 
 
-  const form = useForm({   //TanStack Form.  এখানে সব field-এর value রাখা হয় এবং submit handle করা হয়
+  const form = useForm({   
     defaultValues: {
       role: initial?.role ?? "",
       skills: initial?.skills ?? [],
@@ -106,7 +106,7 @@ export default function ProfileForm({ //এটাই পুরো form তৈর
       };
 
       try {
-        if (isEdit) { //Toast ব্যবহার করা হয়েছে success এবং error দেখানোর জন্য।
+        if (isEdit) {
           await updateProfile(profileData);
           toast.add({ type: "success", description: "Profile updated" });
           onSuccess?.();
@@ -116,7 +116,7 @@ export default function ProfileForm({ //এটাই পুরো form তৈর
             type: "success",
             description: "Profile created successfully",
           });
-          router.push("/requirements/browse"); //for go next page
+          router.push("/requirements/browse");
         }
       } catch (error) {
         toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -124,7 +124,7 @@ export default function ProfileForm({ //এটাই পুরো form তৈর
     },
   });
 
-  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {  // photo upload
+  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) { 
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
@@ -160,9 +160,9 @@ export default function ProfileForm({ //এটাই পুরো form তৈর
     : null;
 
   return (
-    <form //validation check
-      onSubmit={(e) => { //when press submit when event(e) trigger 
-        e.preventDefault();  //browser a default behavior off kore 
+    <form 
+      onSubmit={(e) => { 
+        e.preventDefault();  
         form.handleSubmit(e); 
       }}
       className="space-y-6"
