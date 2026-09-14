@@ -38,11 +38,11 @@ import {
   updateProfile,
   uploadProfilePhoto,
 } from "@/services/profile.service";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // পরের page-এ যায়
 
 const API_ORIGIN = new URL(envConfig.NEXT_PUBLIC_API_URL).origin;
 
-const urlSchema = z
+const urlSchema = z     // zod validation profileSchema দিয়ে কোন field required, কত minimum/maximum হবে, URL valid কি না—এসব check করা হয়
   .string()
   .refine((v) => v === "" || /^https?:\/\//.test(v), "Must be a valid URL");
 
@@ -64,20 +64,20 @@ const profileSchema = z.object({
   photoUrl: z.string().nullable(),
 });
 
-export default function ProfileForm({
+export default function ProfileForm({ 
   initial,
   submitLabel,
-  onSuccess,
+  onSuccess, 
 }: {
-  initial?: Partial<IProfileFormValues>;
+  initial?: Partial<IProfileFormValues>;  
   submitLabel?: string;
   onSuccess?: () => void;
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-  const isEdit = !!initial;
+  const isEdit = !!initial; 
 
-  const form = useForm({
+  const form = useForm({   
     defaultValues: {
       role: initial?.role ?? "",
       skills: initial?.skills ?? [],
@@ -124,7 +124,7 @@ export default function ProfileForm({
     },
   });
 
-  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) { 
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
@@ -143,7 +143,7 @@ export default function ProfileForm({
       const fd = new FormData();
       fd.append("file", file);
       const result = await uploadProfilePhoto(fd);
-      form.setFieldValue("photoUrl", result.photoUrl);
+      form.setFieldValue("photoUrl", result.photoUrl);// photo in url
       toast.add({ type: "success", description: "Photo uploaded" });
     } catch (error) {
       toast.add({ type: "error", description: getApiErrorMessage(error) });
@@ -160,10 +160,10 @@ export default function ProfileForm({
     : null;
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit(e);
+    <form 
+      onSubmit={(e) => { 
+        e.preventDefault();  
+        form.handleSubmit(e); 
       }}
       className="space-y-6"
     >
@@ -212,7 +212,7 @@ export default function ProfileForm({
         </div>
       </div>
 
-      <FieldGroup>
+      <FieldGroup> // UI Form Fields
         <form.Field
           name="role"
           children={(field) => {
