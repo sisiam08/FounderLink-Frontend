@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell, Check } from "lucide-react";
 
 import { useNotificationSocket } from "@/components/providers/realtime-provider";
@@ -9,7 +9,6 @@ import { toast } from "@/components/ui/toast";
 import type { INotification } from "@/interfaces";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getNotifications, markNotificationAsRead } from "@/services/notification.service";
-
 
 function notificationText(notification: INotification) {
   const preview = notification.payload.messagePreview;
@@ -21,6 +20,7 @@ export default function NotificationBell() {
   const { socket, unreadCount, setUnreadCount } = useNotificationSocket();
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -52,6 +52,17 @@ export default function NotificationBell() {
     };
   }, [setUnreadCount, socket]);
 
+  useEffect(() => {
+    if (!open) return;
+    function handleOutsideClick(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [open]);
+
   async function markRead(notification: INotification) {
     if (notification.isRead) return;
     try {
@@ -68,7 +79,7 @@ export default function NotificationBell() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <Button
         variant="ghost"
         size="icon"
