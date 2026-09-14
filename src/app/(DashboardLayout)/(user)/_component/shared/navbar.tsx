@@ -21,6 +21,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { Logo } from "@/components/shared/logo";
+import NotificationBell from "@/components/shared/notification-bell";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -128,6 +129,7 @@ export default function Navbar() {
             New Startup
           </Button>
           <ThemeToggle />
+          <NotificationBell />
 
           <div ref={menuRef} className="relative">
             <button
