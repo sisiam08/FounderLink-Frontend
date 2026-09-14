@@ -164,7 +164,68 @@ export default function ApplicationsClient({
         </div>
       </div>
 
-        
+      {loading ? (
+        <SkeletonRows />
+      ) : error ? (
+        <Card>
+          <CardContent className="p-6 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      ) : applications.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center text-sm text-muted-foreground">
+            No applications match the selected filters.
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="overflow-x-auto p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Candidate</TableHead>
+                  <TableHead>Startup</TableHead>
+                  <TableHead>Score</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Applied</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {applications.map((app) => (
+                  <TableRow key={app.id}>
+                    <TableCell>
+                      {app.candidate && (
+                        <Link
+                          href={`/admin/users/${app.candidate.id}`}
+                          className="flex items-center gap-2 hover:underline"
+                        >
+                          <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs">
+                            {initials(app.candidate.fullName)}
+                          </div>
+                          {app.candidate.fullName}
+                        </Link>
+                      )}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {app.requirement?.startupIdea?.title ?? "—"}
+                    </TableCell>
+                    <TableCell>
+                      <CompatibilityScoreBadge score={app.compatibilityScore} />
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={app.status} />
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {formatDate(app.createdAt)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
 
       
     </div>
