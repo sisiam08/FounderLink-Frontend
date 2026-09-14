@@ -31,7 +31,6 @@ import { getCurrentUser, logout } from "@/services/auth.service";
 import { cn } from "@/lib/utils";
 import { initials } from "@/helpers/string-utils";
 
-
 const NAV_LINKS = [
   { href: "/requirements/browse", label: "Browse", icon: Search },
   { href: "/applications/mine", label: "My Applications", icon: FileText },

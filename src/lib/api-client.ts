@@ -83,7 +83,7 @@ api.interceptors.response.use(
   (response) => response,
 
   async (error: AxiosError) => {
-   const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
+    const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
 
     if (!originalRequest) {
       return Promise.reject(error);

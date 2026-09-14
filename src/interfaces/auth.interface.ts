@@ -22,7 +22,7 @@ export interface ISignupResponse {
 export interface IAuthRouteRule {
   match: (pathname: string) => boolean;
   allowedRoles: SystemRole[];
-};
+}
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
