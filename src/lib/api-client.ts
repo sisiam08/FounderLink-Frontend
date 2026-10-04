@@ -26,7 +26,16 @@ export const getServerCookieHeader = async (): Promise<string> => {
       .getAll()
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
-  } catch {
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "digest" in error &&
+      (error as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE"
+    ) {
+      throw error;
+    }
+
     return "";
   }
 };
